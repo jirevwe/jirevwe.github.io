@@ -1,0 +1,9 @@
+node_modules
+**.html
+.vscode
+dist
+npm-debug.log
+public
+db.json
+.deploy_git
+*.log

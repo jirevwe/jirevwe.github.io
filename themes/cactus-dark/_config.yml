@@ -1,0 +1,54 @@
+nav:
+  Home: /
+  About: /about/
+  Blog: /archives/
+
+customize:
+  gravatar:
+    email: rtukpe@gmail.com
+  logo:
+    enabled: true
+    width: 50
+    height: 50
+    gravatar: true
+  favicon:
+    # eg. generate with http://realfavicongenerator.net/
+    desktop:
+      url: favicon.ico
+      gravatar: false
+    android:
+      url: favicon.ico
+      gravator: false
+  social_links:
+    github:
+      iconset: fab
+      url: http://github.com/jirevwe
+    linkedin:
+      iconset: fab
+      url: https://www.linkedin.com/in/rtukpe/
+    twitter:
+      iconset: fab
+      url: https://www.twitter.com/rtukpe/
+  me_links:
+    github: http://github.com/jirevwe
+    webmention_endpoint: https://webmention.io/raymondtukpe.com/webmention
+    pingback_endpoint: https://webmention.io/raymondtukpe.com/xmlrpc
+  show_all_posts: false
+  post_count: 6
+  highlight: rainbow
+
+# RSS
+rss: false
+
+# Plugins
+plugins:
+  disqus_shortname:
+  google_analytics:
+
+# Miscellaneous
+miscellaneous:
+  open_graph: # see http://ogp.me
+    fb_app_id:
+    fb_admins:
+    twitter_id:
+    google_plus:
