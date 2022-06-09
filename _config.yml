@@ -86,3 +86,8 @@ feed:
 
 include:
   - "favicon.ico"
+
+# add caption for iamges
+image_caption:
+  enable: true #false to disable
+  class_name: "image-caption"
