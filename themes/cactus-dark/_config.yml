@@ -42,8 +42,7 @@ rss: false
 
 # Plugins
 plugins:
-  disqus_shortname:
-  google_analytics:
+  google_analytics: G-WBT5Z15WML
 
 # Miscellaneous
 miscellaneous:
