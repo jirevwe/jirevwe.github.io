@@ -9,13 +9,33 @@
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>Hi! 👋 I&#39;m Raymond</description>
-    <pubDate>Wed, 08 Jun 2022 11:17:28 GMT</pubDate>
+    <pubDate>Mon, 15 Aug 2022 22:39:11 GMT</pubDate>
     <generator>http://hexo.io/</generator>
     
     <item>
+      <title>MongoDB Single Node Replica Set</title>
+      <link>https://raymondtukpe.com/mongodb-single-node-replica-set.html</link>
+      <guid>https://raymondtukpe.com/mongodb-single-node-replica-set.html</guid>
+      <pubDate>Thu, 09 Jun 2022 19:35:09 GMT</pubDate>
+      
+        
+        
+      <description>&lt;h2 id=&quot;The-Problem&quot;&gt;&lt;a href=&quot;#The-Problem&quot; class=&quot;headerlink&quot; title=&quot;The Problem&quot;&gt;&lt;/a&gt;The Problem&lt;/h2&gt;&lt;p&gt;If you’re like me and you’re build</description>
+        
+      
+      
+      
+      
+      
+      
+      <comments>https://raymondtukpe.com/mongodb-single-node-replica-set.html#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
       <title>A Former Child Genius</title>
-      <link>https://raymondtukpe.com/former-child-geniuses.html</link>
-      <guid>https://raymondtukpe.com/former-child-geniuses.html</guid>
+      <link>https://raymondtukpe.com/a-former-child-genius.html</link>
+      <guid>https://raymondtukpe.com/a-former-child-genius.html</guid>
       <pubDate>Wed, 01 Jun 2022 10:33:53 GMT</pubDate>
       
         
@@ -30,7 +50,7 @@
       <category domain="https://raymondtukpe.com/tags/self-improvement/">self-improvement</category>
       
       
-      <comments>https://raymondtukpe.com/former-child-geniuses.html#disqus_thread</comments>
+      <comments>https://raymondtukpe.com/a-former-child-genius.html#disqus_thread</comments>
       
     </item>
     

@@ -82,7 +82,7 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" href="/former-child-geniuses.html"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover='toggleById("i-prev");' onmouseout='toggleById("i-prev");'></i></a></li>
+        <li><a class="icon" href="/a-former-child-genius.html"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover='toggleById("i-prev");' onmouseout='toggleById("i-prev");'></i></a></li>
         
         
         <li><a class="icon" href="/bloodborne-saved-me.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover='toggleById("i-next").toggleById();' onmouseout='toggleById("i-next");'></i></a></li>
@@ -246,6 +246,27 @@
 <script src="/js/main.js"></script>
 
 <!-- Google Analytics -->
+
+    <script type="text/javascript">
+        var gaProperty = 'G-WBT5Z15WML'; 
+        var disableStr = 'ga-disable-' + gaProperty; 
+        if (document.cookie.indexOf(disableStr + '=true') > -1) { 
+            window[disableStr] = true;
+        } 
+        function gaOptout() { 
+            document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/'; 
+            window[disableStr] = true; 
+            alert('Das Tracking ist jetzt deaktiviert'); 
+        } 
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ 
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), 
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) 
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); 
+
+        ga('create', gaProperty, 'auto'); 
+        ga('set', 'anonymizeIp', true); 
+        ga('send', 'pageview');
+    </script>
 
 <!-- Disqus Comments -->
 

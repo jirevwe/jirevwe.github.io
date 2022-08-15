@@ -163,10 +163,10 @@
 <p>I realised this when I heard this quote from Djura “_You still dream I should think? Then come as often as you like, I’ll show you another death._” Hence, dying is part of the game cycle.</p>
 <p>But how does that relate to real-life though? I started seeing parallels with how the game played out and how life is sometimes.</p>
 <p>In Bloodborne:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1. You meet an enemy</span><br><span class="line">2. You die</span><br><span class="line">3. You learn why you died (or not, lol)</span><br><span class="line">4. You try again</span><br><span class="line">5. You die again</span><br><span class="line"> .</span><br><span class="line"> .</span><br><span class="line">9. You may choose to level up</span><br><span class="line"> .</span><br><span class="line"> .</span><br><span class="line">n. Then eventually you win</span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">1.</span> You meet an enemy</span><br><span class="line"><span class="bullet">2.</span> You die</span><br><span class="line"><span class="bullet">3.</span> You learn why you died (or not, lol)</span><br><span class="line"><span class="bullet">4.</span> You try again</span><br><span class="line"><span class="bullet">5.</span> You die again</span><br><span class="line"> .</span><br><span class="line"> .</span><br><span class="line"><span class="bullet">9.</span> You may choose to level up</span><br><span class="line"> .</span><br><span class="line"> .</span><br><span class="line">n. Then eventually you win</span><br></pre></td></tr></table></figure>
 
 <p>In real life:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1. You try something (maybe start a business)</span><br><span class="line">2. You fail</span><br><span class="line">3. You learn why you failed (or not 😂)</span><br><span class="line">4. You try again</span><br><span class="line">5. You fail again</span><br><span class="line"> .</span><br><span class="line"> .</span><br><span class="line">9. You may choose to learn new skills</span><br><span class="line"> .</span><br><span class="line"> .</span><br><span class="line">n. Then you may eventually succeed</span><br></pre></td></tr></table></figure>
+<figure class="highlight mercury"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>. You <span class="built_in">try</span> something (maybe start a business)</span><br><span class="line"><span class="number">2</span>. You <span class="built_in">fail</span></span><br><span class="line"><span class="number">3</span>. You learn why you failed (or <span class="built_in">not</span> 😂)</span><br><span class="line"><span class="number">4</span>. You <span class="built_in">try</span> again</span><br><span class="line"><span class="number">5</span>. You <span class="built_in">fail</span> again</span><br><span class="line"> .</span><br><span class="line"> .</span><br><span class="line"><span class="number">9</span>. You may choose to learn new skills</span><br><span class="line"> .</span><br><span class="line"> .</span><br><span class="line">n. Then you may eventually succeed</span><br></pre></td></tr></table></figure>
 
 <p>In my own case:</p>
 <ol>
@@ -289,6 +289,27 @@
 <script src="/js/main.js"></script>
 
 <!-- Google Analytics -->
+
+    <script type="text/javascript">
+        var gaProperty = 'G-WBT5Z15WML'; 
+        var disableStr = 'ga-disable-' + gaProperty; 
+        if (document.cookie.indexOf(disableStr + '=true') > -1) { 
+            window[disableStr] = true;
+        } 
+        function gaOptout() { 
+            document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/'; 
+            window[disableStr] = true; 
+            alert('Das Tracking ist jetzt deaktiviert'); 
+        } 
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ 
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), 
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) 
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); 
+
+        ga('create', gaProperty, 'auto'); 
+        ga('set', 'anonymizeIp', true); 
+        ga('send', 'pageview');
+    </script>
 
 <!-- Disqus Comments -->
 

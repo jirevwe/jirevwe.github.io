@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="referrer" content="no-referrer">
+    <meta name="description" content="The ProblemIf you’re like me and you’re building non-trivial software and you use MongoDB as a datastore you’d know that it can be a pain in the ass to work around the fact that MongoDB doesn’t suppor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB Single Node Replica Set">
+<meta property="og:url" content="https://raymondtukpe.com/mongodb-single-node-replica-set.html">
+<meta property="og:site_name" content="Raymond Tukpe">
+<meta property="og:description" content="The ProblemIf you’re like me and you’re building non-trivial software and you use MongoDB as a datastore you’d know that it can be a pain in the ass to work around the fact that MongoDB doesn’t suppor">
+<meta property="og:locale">
+<meta property="article:published_time" content="2022-06-09T19:35:09.000Z">
+<meta property="article:modified_time" content="2022-08-15T22:39:11.780Z">
+<meta property="article:author" content="Raymond Tukpe">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/favicon.ico" sizes="192x192">
+          
+        
+        
+    
+    <!-- title -->
+    <title>MongoDB Single Node Replica Set</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+    
+    
+
+    <!-- rel-me links -->
+    
+      
+        <link href="http://github.com/jirevwe" rel="me">
+      
+        <link href="https://webmention.io/raymondtukpe.com/webmention" rel="me">
+      
+        <link href="https://webmention.io/raymondtukpe.com/xmlrpc" rel="me">
+      
+    
+
+    <!-- Webmention link -->
+    
+
+    
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/rss2.xml" title="Raymond Tukpe" type="application/rss+xml">
+</head>
+
+<body>
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="window.scrollTo(0, 0)" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Blog</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/a-former-child-genius.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover='toggleById("i-next").toggleById();' onmouseout='toggleById("i-next");'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="window.scrollTo(0,0)"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover='toggleById("i-top");' onmouseout='toggleById("i-top");'></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover='toggleById("i-share");' onmouseout='toggleById("i-share");' onclick='toggleById("share");return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/mongodb-single-node-replica-set.html"><i class="fas fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&text=MongoDB Single Node Replica Set"><i class="fas fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&is_video=false&description=MongoDB Single Node Replica Set"><i class="fas fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MongoDB Single Node Replica Set&body=Check out this article: https://raymondtukpe.com/mongodb-single-node-replica-set.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&name=MongoDB Single Node Replica Set&description="><i class="fas fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Problem"><span class="toc-number">1.</span> <span class="toc-text">The Problem</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Setup"><span class="toc-number">2.</span> <span class="toc-text">Setup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Solution"><span class="toc-number">3.</span> <span class="toc-text">The Solution</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Shorter-Solution"><span class="toc-number">4.</span> <span class="toc-text">A Shorter Solution</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Notes"><span class="toc-number">5.</span> <span class="toc-text">Notes</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index width mx-auto px2 my4">
+        
+        <article class="h-entry post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <a href="https://raymondtukpe.com/mongodb-single-node-replica-set.html" class="u-url">
+        <h1 class="posttitle p-name" itemprop="name headline" property="headline">
+            MongoDB Single Node Replica Set
+        </h1>
+    </a>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" property="author" itemscope itemtype="http://schema.org/Person" vocab="http://schema.org/" typeof="Person">
+        <span itemprop="name" property="name" class="p-author h-card">Raymond Tukpe</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2022-06-09T19:35:09.000Z" class="dt-published" itemprop="datePublished" property="datePublished">2022-06-09</time>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+  <div class="content e-content" itemprop="articleBody" property="articleBody">
+    <h2 id="The-Problem"><a href="#The-Problem" class="headerlink" title="The Problem"></a>The Problem</h2><p>If you’re like me and you’re building non-trivial software and you use MongoDB as a datastore you’d know that it can be a pain in the ass to work around the fact that MongoDB doesn’t support transactions when running it locally, so you might opt to use a shared instance on MongoDB Altas or look for a docker compose file that spins up a replica set, but that’s not ideal because it’s an extra thing you have to setup.</p>
+<h2 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h2><p>You can run MongoDB as a single-node replica-set on your local machine. Depending on how you installed MongoDB this setup might be different. I’m currently on <code>Ubuntu 20.04.4 LTS</code>, and I’m using the <code>apt</code> package manager. Installing mongodb using apt will create a daemon that runs mongodb in the background.</p>
+<h2 id="The-Solution"><a href="#The-Solution" class="headerlink" title="The Solution"></a>The Solution</h2><p>According to <a target="_blank" rel="noopener" href="https://www.mongodb.com/docs/manual/tutorial/convert-standalone-to-replica-set/">MongoDB’s documentation</a>, a <code>mongod</code> standalone instance can be converted to a replica set by passing a cli flag with the replica set name.</p>
+<ol>
+<li>Stop the currently running MongoDB Daemon</li>
+</ol>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop mongod.service</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Edit the service unit file</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /lib/systemd/system/mongod.service</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>Update the <code>ExecStart</code> command</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">ExecStart=/usr/bin/mongod --config /etc/mongod.conf --replSet [my-replica-set-name]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>Reload <code>systemd</code></li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl reload mongod</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>The permission settings on <code>/var/lib/mongodb</code> and <code>/tmp/mongodb-27017.lock</code> are wrong, so you will have to change the owner to monogdb. You can read more about it <a target="_blank" rel="noopener" href="https://askubuntu.com/questions/823288/mongodb-loads-but-breaks-returning-status-14">here</a> and <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/60309575/mongodb-service-failed-with-result-exit-code">here</a>.</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chown -R mongodb:mongodb /var/lib/mongodb</span><br><span class="line">chown mongodb:mongodb /tmp/mongodb-27017.sock</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>Restart the MongoDB Daemon</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start mongod.service</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>Connect to the MongoDB instance with this connection URI</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mongodb://localhost:27017/<span class="built_in">test</span>?retryWrites=<span class="literal">true</span>&amp;w=majority&amp;replicaSet=[my-replica-set-name]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>This would get you up and running in a few minutes but once the package is updated you’d have to redo the process again.</p>
+<h2 id="A-Shorter-Solution"><a href="#A-Shorter-Solution" class="headerlink" title="A Shorter Solution"></a>A Shorter Solution</h2><p>I built a cli tool that makes the process trivial, it’s called <code>rs</code> and you can snag the binary from <a target="_blank" rel="noopener" href="https://github.com/jirevwe/rs/releases/tag/v0.1.2">here</a>.</p>
+<p>It’s really easy to setup a single node replica set, you can run there commands to get started</p>
+<ol>
+<li>This downloads and unpacks MongoDB (the default is v4.2.21) into a folder in your home directory</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rs download</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Run the replica set</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rs run</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>Connect to the MongoDB instance with this connection URI</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mongodb://localhost:27017/<span class="built_in">test</span>?retryWrites=<span class="literal">true</span>&amp;w=majority&amp;replicaSet=localhost</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h2><ol>
+<li>There’s a known issue with the <code>rs</code> cli tool where <code>mongod</code> would fail to start, the fix is delete the <code>data</code> folder for that distribution. Haha, I know it’s not elegant but the tool has served it’s purpose.</li>
+<li>if you want you can use <code>rs</code> to download and run different mongodb distributions if that’s something you want to do.</li>
+</ol>
+
+  </div>
+</article>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Blog</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Problem"><span class="toc-number">1.</span> <span class="toc-text">The Problem</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Setup"><span class="toc-number">2.</span> <span class="toc-text">Setup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Solution"><span class="toc-number">3.</span> <span class="toc-text">The Solution</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#A-Shorter-Solution"><span class="toc-number">4.</span> <span class="toc-text">A Shorter Solution</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Notes"><span class="toc-number">5.</span> <span class="toc-text">Notes</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/mongodb-single-node-replica-set.html"><i class="fas fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&text=MongoDB Single Node Replica Set"><i class="fas fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&is_video=false&description=MongoDB Single Node Replica Set"><i class="fas fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MongoDB Single Node Replica Set&body=Check out this article: https://raymondtukpe.com/mongodb-single-node-replica-set.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&title=MongoDB Single Node Replica Set"><i class="fas fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/mongodb-single-node-replica-set.html&name=MongoDB Single Node Replica Set&description="><i class="fas fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='toggleById("toc-footer")'><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='toggleById("share-footer")'><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="window.scrollTo(0,0)"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='toggleById("nav-footer")'><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2022 Raymond Tukpe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Blog</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<!--
+<script defer type="text/javascript" src="js/pirsch.js"
+    id="pirschjs"
+    data-code="GoPk8VNmzk8Z6n7xikwZahvOxm1MNPud"></script>
+-->
+</body>
+</html>
+<!-- styles -->
+
+<link rel="stylesheet" href="/lib/roboto/css/roboto.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        var gaProperty = 'G-WBT5Z15WML'; 
+        var disableStr = 'ga-disable-' + gaProperty; 
+        if (document.cookie.indexOf(disableStr + '=true') > -1) { 
+            window[disableStr] = true;
+        } 
+        function gaOptout() { 
+            document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/'; 
+            window[disableStr] = true; 
+            alert('Das Tracking ist jetzt deaktiviert'); 
+        } 
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ 
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), 
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) 
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); 
+
+        ga('create', gaProperty, 'auto'); 
+        ga('set', 'anonymizeIp', true); 
+        ga('send', 'pageview');
+    </script>
+
+<!-- Disqus Comments -->
+
+
