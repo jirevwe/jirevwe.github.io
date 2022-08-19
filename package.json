@@ -8,7 +8,7 @@
   "scripts": {
     "deploy": "hexo clean && hexo deploy",
     "new": "hexo new post $1",
-    "start": "hexo server"
+    "start": "hexo generate && hexo server"
   },
   "dependencies": {
     "hexo": "^5.0.0",

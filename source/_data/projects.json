@@ -3,5 +3,15 @@
     "name": " Convoy",
     "url": "https://github.com/frain-dev/convoy",
     "desc": "An Open Source Fast and Secure Webhooks Service."
+  },
+  {
+    "name": " rs",
+    "url": "https://github.com/jirevwe/rs",
+    "desc": "rs is a zero config mongodb replica set runner"
+  },
+  {
+    "name": "Gomoney",
+    "url": "https://gomoney.global",
+    "desc": "Gomoney is a Nigerian digital bank created to foster a future where people have enough tools to make informed decisions about their money."
   }
 ]
