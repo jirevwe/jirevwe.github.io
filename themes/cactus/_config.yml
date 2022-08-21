@@ -152,6 +152,10 @@ google_analytics:
   enabled: true
   id: G-WBT5Z15WML
 
+mixpanel:
+  enabled: true
+  id: 9610491ecd39092940c531190faae9e7
+
 # Fill in your Baidu Analytics tracking ID to enable Baidu Analytics.
 baidu_analytics:
   enabled: false
