@@ -1,7 +1,10 @@
 ---
 title: MongoDB Single Node Replica Set
 date: 2022-06-09 20:35:09
-tags:
+tags: 
+    - tech 
+    - databases
+    - mongodb
 ---
 
 ## The Problem

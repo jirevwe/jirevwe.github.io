@@ -1,7 +1,9 @@
 ---
 title: Running Docker commands without sudo
 date: 2022-08-16 15:13:01
-tags:
+tags: 
+    - tech 
+    - docker
 ---
 
 # Run Docker commands without sudo

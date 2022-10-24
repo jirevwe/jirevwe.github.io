@@ -1,7 +1,8 @@
 ---
-title: An Attempt At Writing
+title: An Attempt At Writing... Again
 date: 2022-05-11 19:35:46
 tags:
+    - fluff
 ---
 
 I've been struggling to put my thoughts down consistently for a long time. This is not because I don't want to, but because I don't know how to fit into my current schedule. hopefully I get better at it gradually.

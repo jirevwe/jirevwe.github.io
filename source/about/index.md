@@ -7,7 +7,9 @@ date: 2017-05-03 22:21:16
 
 ## Me
 
-Hey 👋 I'm Raymond, 29 year old, based in Ibadan, Nigeria. Married to the LOML.
+Hey 👋 I'm Raymond Tukpe.
+I'm a 29 year old Software Engineer, based in Ibadan, Nigeria.
+I'm married to the LOML and we're expecting our first child.
 
 ## Work
 

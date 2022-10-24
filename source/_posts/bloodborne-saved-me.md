@@ -1,7 +1,9 @@
 ---
 title: Bloodborne Saved Me
 date: 2021-06-24 22:57:45
-tags:
+tags: 
+    - self-improvement
+    - reflection 
 ---
 
 ![An image of the moon presence descending after defeating Gerhman](https://cdn-images-1.medium.com/max/800/0*7_0zQ3DNKV6uhuSJ.png)

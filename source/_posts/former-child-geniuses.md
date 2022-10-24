@@ -1,7 +1,9 @@
 ---
 title: A Former Child Genius
 date: 2022-06-01 11:33:53
-tags: self-improvement
+tags: 
+    - self-improvement
+    - reflection
 ---
 
 I used to think I was smart, boy was I wrong. LMAO. I was a weird child, always out of place any and everywhere. I had a double class promotion twice so (from grade 2 to 3, then grade 4 to 9). So I didn't really grow up and learn with my peers and inadvertently didn't learn how to properly mingle with people or play the social games people played with each other. This was all in elementary/primary school though. I sucked so much in high/secondary school and finally figured it out (I think) in college/university.
