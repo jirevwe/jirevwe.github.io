@@ -327,9 +327,9 @@ decamelize@^1.0.0:
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
-  integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
+  integrity sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==
 
 deepmerge@^4.2.2:
   version "4.2.2"
@@ -607,6 +607,11 @@ hexo-i18n@^1.0.0:
   dependencies:
     sprintf-js "^1.0.3"
 
+hexo-image-caption@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/hexo-image-caption/-/hexo-image-caption-0.1.1.tgz#0091b582da05acedf946a3e67e8aa205b1f4dfa2"
+  integrity sha512-1XOWdYhzAP41CRgi1S/7ZBpNrT/muuzLjX/ku3yQdOMtctL/wJ8xVfrlGfvm6YpjvnG04XK+XKwMRK2ihwRdSw==
+
 hexo-log@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/hexo-log/-/hexo-log-2.0.0.tgz#1dcc8e960029b08b21994fe2c56c4e3d6346e893"
@@ -655,6 +660,11 @@ hexo-server@^2.0.0:
     morgan "^1.9.1"
     open "^7.0.0"
     serve-static "^1.14.1"
+
+hexo-tag-twitter@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/hexo-tag-twitter/-/hexo-tag-twitter-1.0.2.tgz#03fdc73a5fff1adaf0d2c5a746b156be3c38b74c"
+  integrity sha512-X4i4XEHt5gFolmKyehwOpO/rFa3rDurk6xycDO4c71lFwcgAxuHlXGQnYi82jF3wI7qmPnAxkvvSYuRtHqB0KA==
 
 hexo-util@^1.0.0:
   version "1.9.1"
