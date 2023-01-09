@@ -8,8 +8,8 @@
     
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
-    <description>Hi! 👋 I&#39;m Raymond</description>
-    <pubDate>Tue, 16 Aug 2022 14:19:24 GMT</pubDate>
+    <description>Hi! 👋 I&#39;m Raymond Tukpe</description>
+    <pubDate>Mon, 24 Oct 2022 19:33:57 GMT</pubDate>
     <generator>http://hexo.io/</generator>
     
     <item>
@@ -26,6 +26,10 @@
       
       
       
+      
+      <category domain="https://raymondtukpe.com/tags/tech/">tech</category>
+      
+      <category domain="https://raymondtukpe.com/tags/docker/">docker</category>
       
       
       <comments>https://raymondtukpe.com/running-docker-commands-without-sudo.html#disqus_thread</comments>
@@ -46,6 +50,12 @@
       
       
       
+      
+      <category domain="https://raymondtukpe.com/tags/tech/">tech</category>
+      
+      <category domain="https://raymondtukpe.com/tags/databases/">databases</category>
+      
+      <category domain="https://raymondtukpe.com/tags/mongodb/">mongodb</category>
       
       
       <comments>https://raymondtukpe.com/mongodb-single-node-replica-set.html#disqus_thread</comments>
@@ -69,15 +79,17 @@
       
       <category domain="https://raymondtukpe.com/tags/self-improvement/">self-improvement</category>
       
+      <category domain="https://raymondtukpe.com/tags/reflection/">reflection</category>
+      
       
       <comments>https://raymondtukpe.com/a-former-child-genius.html#disqus_thread</comments>
       
     </item>
     
     <item>
-      <title>An Attempt At Writing</title>
-      <link>https://raymondtukpe.com/an-attempt-at-writing.html</link>
-      <guid>https://raymondtukpe.com/an-attempt-at-writing.html</guid>
+      <title>An Attempt At Writing... Again</title>
+      <link>https://raymondtukpe.com/an-attempt-at-writing-again.html</link>
+      <guid>https://raymondtukpe.com/an-attempt-at-writing-again.html</guid>
       <pubDate>Wed, 11 May 2022 18:35:46 GMT</pubDate>
       
         
@@ -89,8 +101,10 @@
       
       
       
+      <category domain="https://raymondtukpe.com/tags/fluff/">fluff</category>
       
-      <comments>https://raymondtukpe.com/an-attempt-at-writing.html#disqus_thread</comments>
+      
+      <comments>https://raymondtukpe.com/an-attempt-at-writing-again.html#disqus_thread</comments>
       
     </item>
     
@@ -108,6 +122,10 @@
       
       
       
+      
+      <category domain="https://raymondtukpe.com/tags/self-improvement/">self-improvement</category>
+      
+      <category domain="https://raymondtukpe.com/tags/reflection/">reflection</category>
       
       
       <comments>https://raymondtukpe.com/bloodborne-saved-me.html#disqus_thread</comments>
