@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "hexo": {
-    "version": "5.2.0"
+    "version": "5.4.2"
   },
   "scripts": {
     "deploy": "hexo clean && hexo deploy",
@@ -23,6 +23,7 @@
     "hexo-renderer-marked": "^3.0.0",
     "hexo-renderer-stylus": "^2.0.0",
     "hexo-server": "^2.0.0",
-    "hexo-tag-twitter": "^1.0.2"
+    "hexo-tag-twitter": "^1.0.2",
+    "yarn": "^1.22.21"
   }
 }
