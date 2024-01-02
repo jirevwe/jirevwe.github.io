@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "hexo": {
-    "version": "5.4.2"
+    "version": "6.3.0"
   },
   "scripts": {
     "deploy": "hexo clean && hexo deploy",
@@ -11,7 +11,7 @@
     "start": "hexo generate && hexo server"
   },
   "dependencies": {
-    "hexo": "^5.0.0",
+    "hexo": "^6.3.0",
     "hexo-deployer-git": "^2.1.0",
     "hexo-generator-archive": "^1.0.0",
     "hexo-generator-category": "^1.0.0",
