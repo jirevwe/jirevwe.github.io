@@ -9,8 +9,30 @@
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>Hi! 👋 I&#39;m Raymond Tukpe</description>
-    <pubDate>Fri, 12 May 2023 09:14:04 GMT</pubDate>
+    <pubDate>Tue, 02 Jan 2024 23:06:43 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>2023</title>
+      <link>https://raymondtukpe.com/2023.html</link>
+      <guid>https://raymondtukpe.com/2023.html</guid>
+      <pubDate>Wed, 13 Dec 2023 07:23:22 GMT</pubDate>
+      
+        
+        
+      <description>&lt;p&gt;This year has been one hell of a ride. A nice, stressful and fulfilling one. It’s been wrought with a lot of massive Ws and Ls. And it’s </description>
+        
+      
+      
+      
+      
+      
+      <category domain="https://raymondtukpe.com/tags/reflection/">reflection</category>
+      
+      
+      <comments>https://raymondtukpe.com/2023.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>TIL - DNS Roundrobin</title>
@@ -103,34 +125,12 @@
       
       
       
-      <category domain="https://raymondtukpe.com/tags/self-improvement/">self-improvement</category>
-      
       <category domain="https://raymondtukpe.com/tags/reflection/">reflection</category>
+      
+      <category domain="https://raymondtukpe.com/tags/self-improvement/">self-improvement</category>
       
       
       <comments>https://raymondtukpe.com/a-former-child-genius.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>An Attempt At Writing... Again</title>
-      <link>https://raymondtukpe.com/an-attempt-at-writing-again.html</link>
-      <guid>https://raymondtukpe.com/an-attempt-at-writing-again.html</guid>
-      <pubDate>Wed, 11 May 2022 18:35:46 GMT</pubDate>
-      
-        
-        
-      <description>&lt;p&gt;I’ve been struggling to put my thoughts down consistently for a long time. This is not because I don’t want to, but because I don’t know </description>
-        
-      
-      
-      
-      
-      
-      <category domain="https://raymondtukpe.com/tags/fluff/">fluff</category>
-      
-      
-      <comments>https://raymondtukpe.com/an-attempt-at-writing-again.html#disqus_thread</comments>
       
     </item>
     

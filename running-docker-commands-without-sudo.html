@@ -12,9 +12,9 @@
 <meta property="og:url" content="https://raymondtukpe.com/running-docker-commands-without-sudo.html">
 <meta property="og:site_name" content="Raymond Tukpe">
 <meta property="og:description" content="Run Docker commands without sudo Add the docker group if it doesn’t already exist  1$ sudo groupadd docker   Add the connected user $USER to the docker group  $USER will be set to the currently logged">
-<meta property="og:locale">
+<meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-08-16T14:13:01.000Z">
-<meta property="article:modified_time" content="2022-10-24T19:33:57.809Z">
+<meta property="article:modified_time" content="2023-08-14T16:42:36.000Z">
 <meta property="article:author" content="Raymond Tukpe">
 <meta property="article:tag" content="tech">
 <meta property="article:tag" content="docker">
@@ -52,7 +52,7 @@
     
 	<!-- mathjax -->
 	
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
     
@@ -154,19 +154,19 @@
     <h1 id="Run-Docker-commands-without-sudo"><a href="#Run-Docker-commands-without-sudo" class="headerlink" title="Run Docker commands without sudo"></a>Run Docker commands without sudo</h1><ol>
 <li>Add the <code>docker</code> group if it doesn’t already exist</li>
 </ol>
-<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo groupadd docker</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">sudo groupadd docker</span></span><br></pre></td></tr></table></figure>
 
 <ol start="2">
 <li>Add the connected user <code>$USER</code> to the docker group</li>
 </ol>
 <p><code>$USER</code> will be set to the currently logged in user</p>
-<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo gpasswd -a <span class="variable">$USER</span> docker</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">sudo gpasswd -a <span class="variable">$USER</span> docker</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>IMPORTANT</strong>: Log out and log back in so that your group membership is re-evaluated. I had to restart my PC for some reason to get it to work.</p>
 <ol start="3">
 <li>Restart the <code>docker</code> daemon</li>
 </ol>
-<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo service docker restart</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">sudo service docker restart</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h2><p>You can read more about it <a target="_blank" rel="noopener" href="https://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo">here</a> and [here] (<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user">https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user</a>)</p>
 
@@ -228,7 +228,7 @@
     Copyright &copy;
     
     
-    2023
+    2024
     Raymond Tukpe
   </div>
   <div class="footer-right">
