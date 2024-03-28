@@ -9,8 +9,30 @@
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>Hi! 👋 I&#39;m Raymond Tukpe</description>
-    <pubDate>Tue, 02 Jan 2024 23:06:43 GMT</pubDate>
+    <pubDate>Thu, 28 Mar 2024 12:24:15 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>Setting up your own VPN using WireGuard</title>
+      <link>https://raymondtukpe.com/setting-up-your-own-vpn-using-wireguard.html</link>
+      <guid>https://raymondtukpe.com/setting-up-your-own-vpn-using-wireguard.html</guid>
+      <pubDate>Thu, 28 Mar 2024 11:42:35 GMT</pubDate>
+      
+        
+        
+      <description>&lt;p&gt;You need a VM (droplet in Digital Ocean or an EC2 machine in AWS) in a cloud platform.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;First enable packet forwarding&lt;/p&gt;</description>
+        
+      
+      
+      
+      
+      
+      
+      <comments>https://raymondtukpe.com/setting-up-your-own-vpn-using-wireguard.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>2023</title>
@@ -107,30 +129,6 @@
       
       
       <comments>https://raymondtukpe.com/mongodb-single-node-replica-set.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>A Former Child Genius</title>
-      <link>https://raymondtukpe.com/a-former-child-genius.html</link>
-      <guid>https://raymondtukpe.com/a-former-child-genius.html</guid>
-      <pubDate>Wed, 01 Jun 2022 10:33:53 GMT</pubDate>
-      
-        
-        
-      <description>&lt;p&gt;I used to think I was smart, boy was I wrong. LMAO. I was a weird child, always out of place any and everywhere. I had a double class pro</description>
-        
-      
-      
-      
-      
-      
-      <category domain="https://raymondtukpe.com/tags/self-improvement/">self-improvement</category>
-      
-      <category domain="https://raymondtukpe.com/tags/reflection/">reflection</category>
-      
-      
-      <comments>https://raymondtukpe.com/a-former-child-genius.html#disqus_thread</comments>
       
     </item>
     
