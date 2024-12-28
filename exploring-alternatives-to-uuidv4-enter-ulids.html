@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="UUIDv4 and ULID are both types of unique identifiers that can be used in distributed systems. UUIDv4 stands for Universally Unique Identifier version 4, and ULID stands for Universally Unique Lexicogr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Exploring alternatives to UUIDv4; Enter ULIDs.">
+<meta property="og:url" content="https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html">
+<meta property="og:site_name" content="Raymond Tukpe">
+<meta property="og:description" content="UUIDv4 and ULID are both types of unique identifiers that can be used in distributed systems. UUIDv4 stands for Universally Unique Identifier version 4, and ULID stands for Universally Unique Lexicogr">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-12-28T13:05:40.000Z">
+<meta property="article:modified_time" content="2024-12-28T15:33:46.210Z">
+<meta property="article:author" content="Raymond Tukpe">
+<meta property="article:tag" content="tech">
+<meta property="article:tag" content="uuid">
+<meta property="article:tag" content="convoy">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Exploring alternatives to UUIDv4; Enter ULIDs.</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Raymond Tukpe" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/setting-up-your-own-vpn-using-wireguard.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&text=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&is_video=false&description=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Exploring alternatives to UUIDv4; Enter ULIDs.&body=Check out this article: https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&name=Exploring alternatives to UUIDv4; Enter ULIDs.&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&t=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#UUIDv4"><span class="toc-number">1.</span> <span class="toc-text">UUIDv4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ULID"><span class="toc-number">2.</span> <span class="toc-text">ULID</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Differences-and-Tradeoffs-between-UUIDs-and-ULIDs"><span class="toc-number">3.</span> <span class="toc-text">Differences and Tradeoffs between UUIDs and ULIDs:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Generating"><span class="toc-number">3.1.</span> <span class="toc-text">Generating</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Inserting"><span class="toc-number">3.2.</span> <span class="toc-text">Inserting</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Timing"><span class="toc-number">3.3.</span> <span class="toc-text">Timing</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-did-this-affect-production-data"><span class="toc-number">4.</span> <span class="toc-text">How did this affect production data?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#What-did-this-mean-for-our-user%E2%80%99s-data"><span class="toc-number">5.</span> <span class="toc-text">What did this mean for our user’s data?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">6.</span> <span class="toc-text">Conclusion</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#References"><span class="toc-number">7.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Exploring alternatives to UUIDv4; Enter ULIDs.
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Raymond Tukpe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-12-28T13:05:40.000Z" itemprop="datePublished">2024-12-28</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/convoy/" rel="tag">convoy</a>, <a class="tag-link-link" href="/tags/tech/" rel="tag">tech</a>, <a class="tag-link-link" href="/tags/uuid/" rel="tag">uuid</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p><strong>UUIDv4</strong> is a commonly used unique identifier format. <strong>UUIDv4</strong> is a standardized format for generating unique identifiers that are widely used in distributed systems. Recently there have attempts to introduce new identifier formats that are shorter, url-friendly, lexographically sortable, collision-safe during generation.</p>
+<p>To name a few:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/segmentio/ksuid">ksuid</a>: KSUIDs are 20 bytes (160 bits) IDs with 1-second precision (correctly detects and handles the same second), encoded in alphanumeric <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Base62">base62</a> as 27 character strings, are URL-friendly and are also lexicographically sortable.  </li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ulid/spec">ulid</a>: ULIDs are 128-bit (16 bytes) IDs with millisecond precision (correctly detects and handles the same millisecond), they are also lexicographically sortable, URL-friendly and are encoded using <a target="_blank" rel="noopener" href="https://www.crockford.com/base32.html">Crockford’s base32</a> as 26 character strings.</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ai/nanoid">nanoid</a>: made at <a target="_blank" rel="noopener" href="https://evilmartians.com/devtools">Evil Martians</a>; Nano ID is tiny (124 bytes), secure, URL-friendly, unique ID generator. It is quite comparable to UUID v4 (random-based). It has a similar number of random bits in the ID (126 in Nano ID and 122 in UUID), so it has a similar collision probability.</li>
+</ul>
+<p><strong>ULID</strong>s combines a timestamp and a random component to generate a unique value that is also lexicographically sortable.</p>
+<h2 id="UUIDv4"><a href="#UUIDv4" class="headerlink" title="UUIDv4"></a>UUIDv4</h2><p>From the <a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/html/rfc4122#section-4.4">UUIDv4 spec</a>, it is constructed by generating random number.</p>
+<figure class="highlight plaintext"><figcaption><span>spec</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Sample ID: 4fcc81d9-9512-4b2e-9267-b5e057d5007a</span><br><span class="line"></span><br><span class="line">   4fcc81d9-9512-      4           b2e-            9          267-b5e057d5007a</span><br><span class="line">  |--------------|    |-|         |----|          |-|        |----------------|</span><br><span class="line">     Randomness     Version*    Randomness      Version**        Randomness</span><br><span class="line"></span><br><span class="line">*  Set the four most significant bits of the 7th byte &#x27;0100&#x27;,</span><br><span class="line">       so that the Hex value always starts with a 4,</span><br><span class="line">       </span><br><span class="line">** Set the 2 most significant bits of the 9 th byte to &#x27;10&#x27;, </span><br><span class="line">        so that the Hex value will always start with a 8, 9, A , or B.  </span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>Standardization</strong>: UUIDv4 is a standardized format defined by <a target="_blank" rel="noopener" href="https://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>, which means it is widely recognized and understood by developers across different languages and platforms. This makes it easier to integrate with other systems and tools that use UUIDv4.</li>
+<li><strong>Large namespace</strong>: UUIDv4 has a larger namespace than ULID, which means that it can generate a larger number of unique identifiers. This is useful in systems with a high rate of data generation or where a large number of unique identifiers are required.</li>
+<li><strong>Randomness</strong>: UUIDv4 is generated using a random or pseudo-random algorithm, which makes it difficult to predict or guess the next value in the sequence. This can be useful in security-sensitive applications or where unpredictability is important.</li>
+</ol>
+<h2 id="ULID"><a href="#ULID" class="headerlink" title="ULID"></a>ULID</h2><p>From the official <a target="_blank" rel="noopener" href="https://github.com/ulid/spec">ULID spec</a>, it is constructed by concatenating a timestamp with a random suffix:</p>
+<figure class="highlight plaintext"><figcaption><span>spec</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Sample ID: 01ARZ3NDEKTSV4RRFFQ69G5FAV</span><br><span class="line"></span><br><span class="line">   01ARZ3NDEK        TSV4RRFFQ69G5FAV</span><br><span class="line"> |------------|    |------------------|</span><br><span class="line">   Timestamp            Randomness</span><br><span class="line">    48bits                80bits</span><br></pre></td></tr></table></figure>
+<p>This provides several nice properties:</p>
+<ol>
+<li><strong>They are lexicographically sortable</strong>: We made the change solely because we wanted to incorporate cursor based pagination, which is really important for reading a large dataset. When your dataset it large enough, offset pagination (using limit and skip in queries) starts to become slow, meaning if you have over 100k events your dashboard will slow to a crawl when loading and searching events/deliveries.</li>
+<li><strong>They are better used as indexes</strong>: ULIDs work very well with Postgres B-Tree indexes.</li>
+<li><strong>They are URL friendly</strong>: ULIDs are more compact, they use Crockford’s base32 for better efficiency and readability (5 bits per character) which make it easy to copy-and-paste (<code>01ARZ3NDEKTSV4RRFFQ69G5FAV</code>), unlike hyphenated UUIDs which are in base 16 (e.g. <code>4fcc81d9-9512-4b2e-9267-b5e057d5007a</code>).</li>
+<li><strong>They are unique with millisecond precision</strong>: ULIDs generated in the same second will be unique based on the random component even in a distributed system. The random component has enough entropy to avoid collisions in practical uses.</li>
+<li><strong>We use them for Idempotency Keys</strong>: To ensure the reliable delivery of an event on a large scale, it is essential for the idempotency key to be unique during the desired time frame for the event to be retryable, typically less than one minute.</li>
+</ol>
+<h2 id="Differences-and-Tradeoffs-between-UUIDs-and-ULIDs"><a href="#Differences-and-Tradeoffs-between-UUIDs-and-ULIDs" class="headerlink" title="Differences and Tradeoffs between UUIDs and ULIDs:"></a>Differences and Tradeoffs between UUIDs and ULIDs:</h2><table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Sortable</th>
+<th>Monotonic</th>
+<th>Randomness</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UUIDv4</td>
+<td>No</td>
+<td>No</td>
+<td>122 bits</td>
+</tr>
+<tr>
+<td>ULID</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>80 bits *</td>
+</tr>
+</tbody></table>
+<pre><code> * Random bits are incremented sequentially within the same millisecond.
+</code></pre>
+<h3 id="Generating"><a href="#Generating" class="headerlink" title="Generating"></a>Generating</h3><p>When creating both <strong>UUIDs</strong> and <strong>ULIDs</strong>, the process of generating <strong>ULIDs</strong> is a little slower when producing 100 million values, and the difference is negligible when generating and inserting 1 million values. Generating <strong>ULIDs</strong> are slower than <strong>UUIDs</strong>, though, the benefits of a sortable globally unique identifier make the tradeoff worth it.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Identifier</strong></th>
+<th><strong>1M Rows (ms)</strong></th>
+<th><strong>10M Rows (ms)</strong></th>
+<th><strong>100M Rows (s)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ULID</strong> (<code>generate_ulid</code>)</td>
+<td>262</td>
+<td>845</td>
+<td>5.9</td>
+</tr>
+<tr>
+<td><strong>UUID</strong> (<code>gen_random_uuid</code>)</td>
+<td>205</td>
+<td>732</td>
+<td>5.5</td>
+</tr>
+</tbody></table>
+<figure class="highlight postgresql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> generate_ulid(now()) <span class="keyword">FROM</span> generate_series(<span class="number">1</span>, <span class="number">10000000</span>);</span><br><span class="line"><span class="comment">-- 100m - 5.9s, 10m - 845ms, 1m - 262ms</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> gen_random_uuid() <span class="keyword">FROM</span> generate_series(<span class="number">1</span>, <span class="number">10000000</span>);</span><br><span class="line"><span class="comment">-- 100m - 5.5s, 10m - 732ms, 1m - 205ms</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Inserting"><a href="#Inserting" class="headerlink" title="Inserting"></a>Inserting</h3><p>When inserting <strong>ULID</strong>s, it takes about <strong>3.27x longer</strong> than <strong>UUID</strong>s inserts. This reflects the additional computational overhead for inserting <strong>ULID</strong>s.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Operation</strong></th>
+<th><strong>1M Rows (s)</strong></th>
+<th><strong>10M Rows (s)</strong></th>
+<th><strong>100M Rows (s)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>UUID Insert</strong> (<code>gen_random_uuid</code>)</td>
+<td>1.76</td>
+<td>18.10</td>
+<td>187.51</td>
+</tr>
+<tr>
+<td><strong>ULID Insert</strong> (<code>generate_ulid</code>)</td>
+<td>5.75</td>
+<td>58.04</td>
+<td>586.48</td>
+</tr>
+</tbody></table>
+<figure class="highlight postgresql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> uuid_test;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> ulid_test;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> uuid_test(id <span class="type">UUID</span>);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> ulid_test(id <span class="type">TEXT</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">ANALYSE</span> <span class="keyword">INSERT</span> <span class="keyword">INTO</span> uuid_test(id)</span><br><span class="line"><span class="keyword">SELECT</span> gen_random_uuid() <span class="keyword">FROM</span> generate_series(<span class="number">1</span>, <span class="number">1000000</span>);</span><br><span class="line"><span class="comment">-- 100m - 187510.769ms, 10m - 18100.076ms, 1m - 1755.845ms</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPLAIN</span> <span class="keyword">ANALYSE</span> <span class="keyword">INSERT</span> <span class="keyword">INTO</span> ulid_test(id)</span><br><span class="line"><span class="keyword">SELECT</span> generate_ulid(now()) <span class="keyword">FROM</span> generate_series(<span class="number">1</span>, <span class="number">1000000</span>);</span><br><span class="line"><span class="comment">-- 100m - 586484.947ms, 10m - 58038.249ms, 1m - 5745.083ms</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Timing"><a href="#Timing" class="headerlink" title="Timing"></a>Timing</h3><p>Timing information can be unintentionally exposed through <strong>ULIDs</strong>, revealing the speed at which a particular resource is generated. By analyzing ULIDs, it becomes possible to deduce the rate at which a service is generating events, thereby disclosing potentially valuable competitive data that should remain confidential.</p>
+<h2 id="How-did-this-affect-production-data"><a href="#How-did-this-affect-production-data" class="headerlink" title="How did this affect production data?"></a>How did this affect production data?</h2><p>With our release of <a target="_blank" rel="noopener" href="https://github.com/frain-dev/convoy/releases/tag/v0.9.2"><code>v0.9.x</code></a> and <a target="_blank" rel="noopener" href="https://docs.getconvoy.io/changelog/core-gateway#v23-5"><code>v23.05.x</code></a>, we (at <a target="_blank" rel="noopener" href="https://getconvoy.io/">Convoy</a>) migrated our main datastore from MongoDB to Postgres, and we decided to change our ID format.</p>
+<ol>
+<li>Old resources still used the old UUIDv4 format.</li>
+<li>Pagination for all old resources broke. We were sorting on the ID which made them out of order since UUIDv4 isn’t lexicographically sortable.</li>
+<li>All new resources use the new ULID format.</li>
+<li>Pagination for new resources like event and event-deliveries were returned alongside the older records bubbled up when the retention policy kicked in, those older records were deleted, and users started seeing only resources with new IDs.</li>
+</ol>
+<h2 id="What-did-this-mean-for-our-user’s-data"><a href="#What-did-this-mean-for-our-user’s-data" class="headerlink" title="What did this mean for our user’s data?"></a>What did this mean for our user’s data?</h2><p>At Convoy, we strive to make sure that our software is backwards compatible and that little effort is required on our user’s part, so your workloads can operate while we move things around internally. We ensure that the contract we keep with our API is never broken. In this case, we unfortunately had to make the change, so we as a company and Convoy as a product could evolve into a version of the vision that we have.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Although a little slower to generate, <strong>ULIDs</strong> provide many pros over the pure random <strong>UUIDv4</strong> that lots of large companies running work-loads at scale have adopted. As a company building for the scale of our current users and future scale of the general internet, we are always looking to adopt and implement technologies that will work at companies of all sizes, sending and ingesting any number of webhook events.</p>
+<p>With the release of <a target="_blank" rel="noopener" href="https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-01.html#name-uuidv7-layout-and-bit-order">UUIDv7</a> that offers some benefits as ULIDs and are native to Postgres as of December 2024 (see the <a target="_blank" rel="noopener" href="https://github.com/postgres/postgres/commit/78c5e141e9c139fc2ff36a220334e4aa25e1b0eb#diff-229a1fe1ecaae95e35dcb9270c20c6d0bf37f33fbf019dfbd7f9ef014b07c0e3">commit here</a>), it might be better to switch to UUIDv7 in the future if one doesn’t care about URL friendliness.  </p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.daveallie.com/ulid-primary-keys">ULID Primary Keys</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.lawrencejones.dev/ulid">Using ULIDs at incident.io</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.intl-spectrum.com/Article/r848/IS_UUID_V4_UUID_V4_Random_Generation">UUID V4 Random Generation</a></li>
+<li><a target="_blank" rel="noopener" href="https://shekhargulati.com/2022/06/23/choosing-a-primary-key-type-in-postgres/">Choosing Primary Key Type in Postgres</a></li>
+<li><a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc9562/">RFC 9562 Universally Unique IDentifiers (UUIDs)</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Blog</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#UUIDv4"><span class="toc-number">1.</span> <span class="toc-text">UUIDv4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ULID"><span class="toc-number">2.</span> <span class="toc-text">ULID</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Differences-and-Tradeoffs-between-UUIDs-and-ULIDs"><span class="toc-number">3.</span> <span class="toc-text">Differences and Tradeoffs between UUIDs and ULIDs:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Generating"><span class="toc-number">3.1.</span> <span class="toc-text">Generating</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Inserting"><span class="toc-number">3.2.</span> <span class="toc-text">Inserting</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Timing"><span class="toc-number">3.3.</span> <span class="toc-text">Timing</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-did-this-affect-production-data"><span class="toc-number">4.</span> <span class="toc-text">How did this affect production data?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#What-did-this-mean-for-our-user%E2%80%99s-data"><span class="toc-number">5.</span> <span class="toc-text">What did this mean for our user’s data?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">6.</span> <span class="toc-text">Conclusion</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#References"><span class="toc-number">7.</span> <span class="toc-text">References</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&text=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&is_video=false&description=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Exploring alternatives to UUIDv4; Enter ULIDs.&body=Check out this article: https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&name=Exploring alternatives to UUIDv4; Enter ULIDs.&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&t=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2024
+    Raymond Tukpe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WBT5Z15WML"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-WBT5Z15WML');
+    </script>
+
+<!-- Mix Panel -->
+
+  <script type="text/javascript">
+    (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
+    for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".split(" ");a.get_group=function(){function b(c){d[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));a.push([e,call2])}}for(var d={},e=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<j.length;c++)b(j[c]);return d};b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?
+    MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+    
+    // Enabling the debug mode flag is useful during implementation,
+    // but it's recommended you remove it for production
+    mixpanel.init('9610491ecd39092940c531190faae9e7', {ignore_dnt: true}); 
+    mixpanel.track('Viewed'); 
+    </script>
+    
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
