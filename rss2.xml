@@ -9,8 +9,34 @@
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>Hi! 👋 I&#39;m Raymond Tukpe</description>
-    <pubDate>Sat, 28 Dec 2024 15:33:46 GMT</pubDate>
+    <pubDate>Tue, 31 Dec 2024 17:49:02 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>You Can Just Do Things</title>
+      <link>https://raymondtukpe.com/you-can-just-do-things.html</link>
+      <guid>https://raymondtukpe.com/you-can-just-do-things.html</guid>
+      <pubDate>Tue, 31 Dec 2024 17:31:18 GMT</pubDate>
+      
+        
+        
+      <description>&lt;p&gt;I’ve been working on a proper solution to Convoy’s data retention using Postgres partitioning (&lt;a href=&quot;https://github.com/frain-dev/conv</description>
+        
+      
+      
+      
+      
+      
+      <category domain="https://raymondtukpe.com/tags/tech/">tech</category>
+      
+      <category domain="https://raymondtukpe.com/tags/convoy/">convoy</category>
+      
+      <category domain="https://raymondtukpe.com/tags/motivation/">motivation</category>
+      
+      
+      <comments>https://raymondtukpe.com/you-can-just-do-things.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>Exploring alternatives to UUIDv4; Enter ULIDs.</title>
@@ -102,30 +128,6 @@
       
       
       <comments>https://raymondtukpe.com/til-dns-roundrobin.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>Running Docker commands without sudo</title>
-      <link>https://raymondtukpe.com/running-docker-commands-without-sudo.html</link>
-      <guid>https://raymondtukpe.com/running-docker-commands-without-sudo.html</guid>
-      <pubDate>Tue, 16 Aug 2022 14:13:01 GMT</pubDate>
-      
-        
-        
-      <description>&lt;h1 id=&quot;Run-Docker-commands-without-sudo&quot;&gt;&lt;a href=&quot;#Run-Docker-commands-without-sudo&quot; class=&quot;headerlink&quot; title=&quot;Run Docker commands without </description>
-        
-      
-      
-      
-      
-      
-      <category domain="https://raymondtukpe.com/tags/tech/">tech</category>
-      
-      <category domain="https://raymondtukpe.com/tags/docker/">docker</category>
-      
-      
-      <comments>https://raymondtukpe.com/running-docker-commands-without-sudo.html#disqus_thread</comments>
       
     </item>
     
