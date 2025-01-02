@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="[go_partman) is a Go native implementation of PostgreSQL table partitioning management, inspired by pg_partman. It automatically manages and maintains partitioned tables in PostgreSQL databases by pro">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Partition Management using go_partman">
+<meta property="og:url" content="https://raymondtukpe.com/partition-management-using-go-partman.html">
+<meta property="og:site_name" content="Raymond Tukpe">
+<meta property="og:description" content="[go_partman) is a Go native implementation of PostgreSQL table partitioning management, inspired by pg_partman. It automatically manages and maintains partitioned tables in PostgreSQL databases by pro">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-01-02T10:24:16.000Z">
+<meta property="article:modified_time" content="2025-01-02T12:54:04.775Z">
+<meta property="article:author" content="Raymond Tukpe">
+<meta property="article:tag" content="tech">
+<meta property="article:tag" content="convoy">
+<meta property="article:tag" content="guide">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Partition Management using go_partman</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Raymond Tukpe" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/you-can-just-do-things.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/partition-management-using-go-partman.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/partition-management-using-go-partman.html&text=Partition Management using go_partman"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/partition-management-using-go-partman.html&is_video=false&description=Partition Management using go_partman"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Partition Management using go_partman&body=Check out this article: https://raymondtukpe.com/partition-management-using-go-partman.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/partition-management-using-go-partman.html&name=Partition Management using go_partman&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/partition-management-using-go-partman.html&t=Partition Management using go_partman"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Installation-and-Usage"><span class="toc-number">1.</span> <span class="toc-text">Installation and Usage</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Table-Requirements"><span class="toc-number">1.1.</span> <span class="toc-text">Table Requirements</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sample-code"><span class="toc-number">1.2.</span> <span class="toc-text">Sample code</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Partition Management using go_partman
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Raymond Tukpe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-01-02T10:24:16.000Z" itemprop="datePublished">2025-01-02</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/convoy/" rel="tag">convoy</a>, <a class="tag-link-link" href="/tags/guide/" rel="tag">guide</a>, <a class="tag-link-link" href="/tags/tech/" rel="tag">tech</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>[go_partman) is a Go native implementation of PostgreSQL table partitioning management, inspired by <a target="_blank" rel="noopener" href="https://github.com/pgpartman/pg_partman">pg_partman</a>. It automatically manages and maintains partitioned tables in PostgreSQL databases by providing the following features:</p>
+<ul>
+<li>Pre-creation of future partitions</li>
+<li>Support for time-based range partitioning</li>
+<li>Configurable tenant-specific retention policies</li>
+<li>Automatic cleanup of old partitions</li>
+</ul>
+<h2 id="Installation-and-Usage"><a href="#Installation-and-Usage" class="headerlink" title="Installation and Usage"></a>Installation and Usage</h2><p>To get started, we first need to install it</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/jirevwe/go_partman</span><br></pre></td></tr></table></figure>
+
+<h3 id="Table-Requirements"><a href="#Table-Requirements" class="headerlink" title="Table Requirements"></a>Table Requirements</h3><p>Your Postgres tables must be created as a partitioned table before using go_partman. Examples:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Single-tenant table</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> events (</span><br><span class="line">    id <span class="type">VARCHAR</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">    created_at <span class="type">TIMESTAMP</span> <span class="keyword">WITH</span> <span class="type">TIME</span> ZONE <span class="keyword">DEFAULT</span> <span class="built_in">CURRENT_TIMESTAMP</span>,</span><br><span class="line">    data JSONB,</span><br><span class="line">    <span class="keyword">PRIMARY</span> KEY (id, created_at)</span><br><span class="line">) <span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (created_at);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- Multi-tenant table</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> events (</span><br><span class="line">    id <span class="type">VARCHAR</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">    project_id <span class="type">VARCHAR</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">    created_at <span class="type">TIMESTAMP</span> <span class="keyword">WITH</span> <span class="type">TIME</span> ZONE <span class="keyword">DEFAULT</span> <span class="built_in">CURRENT_TIMESTAMP</span>,</span><br><span class="line">    data JSONB,</span><br><span class="line">    <span class="keyword">PRIMARY</span> KEY (id, created_at, project_id)</span><br><span class="line">) <span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span> (project_id, created_at);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Sample-code"><a href="#Sample-code" class="headerlink" title="Sample code"></a>Sample code</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/jackc/pgx/v5/pgxpool&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/jackc/pgx/v5/stdlib&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/jirevwe/go_partman&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/jmoiron/sqlx&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	logger := partman.NewSlogLogger()</span><br><span class="line">	</span><br><span class="line">	pgxCfg, err := pgxpool.ParseConfig(<span class="string">&quot;postgres://postgres:postgres@localhost:5432/test?sslmode=disable&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		logger.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pool, err := pgxpool.NewWithConfig(context.Background(), pgxCfg)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		logger.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	sqlDB := stdlib.OpenDBFromPool(pool)</span><br><span class="line">	db := sqlx.NewDb(sqlDB, <span class="string">&quot;pgx&quot;</span>)</span><br><span class="line"></span><br><span class="line">	r, err := NewRetentionPolicy(db, logger, time.Minute)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		logger.Fatal(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	r.Start(context.Background(), time.Minute)</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// start your server</span></span><br><span class="line">	time.Sleep(<span class="number">30</span> * time.Second)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Retentioner <span class="keyword">interface</span> &#123;</span><br><span class="line">	Perform(context.Context) <span class="type">error</span></span><br><span class="line">	Start(context.Context, time.Duration)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> RetentionPolicy <span class="keyword">struct</span> &#123;</span><br><span class="line">	retentionPeriod time.Duration</span><br><span class="line">	partitioner     partman.Partitioner</span><br><span class="line">	logger          *partman.SlogLogger</span><br><span class="line">	db              *sqlx.DB</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewRetentionPolicy</span><span class="params">(db *sqlx.DB, logger *partman.SlogLogger, period time.Duration)</span></span> (*RetentionPolicy, <span class="type">error</span>) &#123;</span><br><span class="line">	pm, err := partman.NewManager(</span><br><span class="line">		partman.WithDB(db),</span><br><span class="line">		partman.WithLogger(logger),</span><br><span class="line">		partman.WithConfig(&amp;partman.Config&#123;SampleRate: time.Second&#125;),</span><br><span class="line">		partman.WithClock(partman.NewRealClock()),</span><br><span class="line">	)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> &amp;RetentionPolicy&#123;</span><br><span class="line">		retentionPeriod: period,</span><br><span class="line">		partitioner:     pm,</span><br><span class="line">		logger:          logger,</span><br><span class="line">		db:              db,</span><br><span class="line">	&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *RetentionPolicy)</span></span> Start(ctx context.Context, sampleRate time.Duration) &#123;</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(r *RetentionPolicy)</span></span> &#123;</span><br><span class="line">		ticker := time.NewTicker(sampleRate)</span><br><span class="line">		<span class="keyword">defer</span> ticker.Stop()</span><br><span class="line"></span><br><span class="line">		<span class="comment">// fetch existing partitions on startup,</span></span><br><span class="line">		<span class="comment">// this is useful for one time setups,</span></span><br><span class="line">		<span class="comment">// but I&#x27;ll leave it in since it&#x27;ll no-op after the first time</span></span><br><span class="line">		err := r.partitioner.ImportExistingPartitions(ctx, partman.Table&#123;</span><br><span class="line">			Schema:            <span class="string">&quot;convoy&quot;</span>,</span><br><span class="line">			TenantIdColumn:    <span class="string">&quot;project_id&quot;</span>,</span><br><span class="line">			PartitionBy:       <span class="string">&quot;created_at&quot;</span>,</span><br><span class="line">			PartitionType:     partman.TypeRange,</span><br><span class="line">			RetentionPeriod:   r.retentionPeriod,</span><br><span class="line">			PartitionInterval: time.Hour * <span class="number">24</span>,</span><br><span class="line">			PartitionCount:    <span class="number">10</span>,</span><br><span class="line">		&#125;)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			r.logger.Errorf(<span class="string">&quot;failed to import existing partitions: %v&quot;</span>, err)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		projectRepo := postgres.NewProjectRepo(r.db)</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			<span class="keyword">select</span> &#123;</span><br><span class="line">			<span class="keyword">case</span> &lt;-ctx.Done():</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			<span class="keyword">case</span> &lt;-ticker.C:</span><br><span class="line">				<span class="comment">// watches for newly added tables and automatically adds them</span></span><br><span class="line">				projects, pErr := projectRepo.LoadProjects(context.Background())</span><br><span class="line">				<span class="keyword">if</span> pErr != <span class="literal">nil</span> &#123;</span><br><span class="line">					r.logger.WithError(pErr).Error(<span class="string">&quot;failed to load projects&quot;</span>)</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">for</span> _, project := <span class="keyword">range</span> projects &#123;</span><br><span class="line">					err = r.partitioner.AddManagedTable(partman.Table&#123;</span><br><span class="line">						Name:              <span class="string">&quot;events&quot;</span>,</span><br><span class="line">						Schema:            <span class="string">&quot;convoy&quot;</span>,</span><br><span class="line">						TenantId:          project.UID,</span><br><span class="line">						TenantIdColumn:    <span class="string">&quot;project_id&quot;</span>,</span><br><span class="line">						PartitionBy:       <span class="string">&quot;created_at&quot;</span>,</span><br><span class="line">						PartitionType:     partman.TypeRange,</span><br><span class="line">						RetentionPeriod:   r.retentionPeriod,</span><br><span class="line">						PartitionInterval: time.Hour * <span class="number">24</span>,</span><br><span class="line">						PartitionCount:    <span class="number">10</span>,</span><br><span class="line">					&#125;)</span><br><span class="line">					<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">						r.logger.WithError(err).Error(<span class="string">&quot;failed to add convoy.events to managed tables&quot;</span>)</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">					err = r.partitioner.AddManagedTable(partman.Table&#123;</span><br><span class="line">						Name:              <span class="string">&quot;event_deliveries&quot;</span>,</span><br><span class="line">						Schema:            <span class="string">&quot;convoy&quot;</span>,</span><br><span class="line">						TenantId:          project.UID,</span><br><span class="line">						TenantIdColumn:    <span class="string">&quot;project_id&quot;</span>,</span><br><span class="line">						PartitionBy:       <span class="string">&quot;created_at&quot;</span>,</span><br><span class="line">						PartitionType:     partman.TypeRange,</span><br><span class="line">						RetentionPeriod:   r.retentionPeriod,</span><br><span class="line">						PartitionInterval: time.Hour * <span class="number">24</span>,</span><br><span class="line">						PartitionCount:    <span class="number">10</span>,</span><br><span class="line">					&#125;)</span><br><span class="line">					<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">						r.logger.WithError(err).Error(<span class="string">&quot;failed to add convoy.event_deliveries to managed tables&quot;</span>)</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">					err = r.partitioner.AddManagedTable(partman.Table&#123;</span><br><span class="line">						Name:              <span class="string">&quot;delivery_attempts&quot;</span>,</span><br><span class="line">						Schema:            <span class="string">&quot;convoy&quot;</span>,</span><br><span class="line">						TenantId:          project.UID,</span><br><span class="line">						TenantIdColumn:    <span class="string">&quot;project_id&quot;</span>,</span><br><span class="line">						PartitionBy:       <span class="string">&quot;created_at&quot;</span>,</span><br><span class="line">						PartitionType:     partman.TypeRange,</span><br><span class="line">						RetentionPeriod:   r.retentionPeriod,</span><br><span class="line">						PartitionInterval: time.Hour * <span class="number">24</span>,</span><br><span class="line">						PartitionCount:    <span class="number">10</span>,</span><br><span class="line">					&#125;)</span><br><span class="line">					<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">						r.logger.WithError(err).Error(<span class="string">&quot;failed to add convoy.delivery_attempts to managed tables&quot;</span>)</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;(r)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *RetentionPolicy)</span></span> Perform(ctx context.Context) <span class="type">error</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> r.partitioner.Maintain(ctx)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Blog</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Installation-and-Usage"><span class="toc-number">1.</span> <span class="toc-text">Installation and Usage</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Table-Requirements"><span class="toc-number">1.1.</span> <span class="toc-text">Table Requirements</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sample-code"><span class="toc-number">1.2.</span> <span class="toc-text">Sample code</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/partition-management-using-go-partman.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/partition-management-using-go-partman.html&text=Partition Management using go_partman"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/partition-management-using-go-partman.html&is_video=false&description=Partition Management using go_partman"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Partition Management using go_partman&body=Check out this article: https://raymondtukpe.com/partition-management-using-go-partman.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/partition-management-using-go-partman.html&title=Partition Management using go_partman"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/partition-management-using-go-partman.html&name=Partition Management using go_partman&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/partition-management-using-go-partman.html&t=Partition Management using go_partman"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    Raymond Tukpe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WBT5Z15WML"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-WBT5Z15WML');
+    </script>
+
+<!-- Mix Panel -->
+
+  <script type="text/javascript">
+    (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
+    for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".split(" ");a.get_group=function(){function b(c){d[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));a.push([e,call2])}}for(var d={},e=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<j.length;c++)b(j[c]);return d};b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?
+    MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+    
+    // Enabling the debug mode flag is useful during implementation,
+    // but it's recommended you remove it for production
+    mixpanel.init('9610491ecd39092940c531190faae9e7', {ignore_dnt: true}); 
+    mixpanel.track('Viewed'); 
+    </script>
+    
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

@@ -9,8 +9,34 @@
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>Hi! 👋 I&#39;m Raymond Tukpe</description>
-    <pubDate>Tue, 31 Dec 2024 17:49:02 GMT</pubDate>
+    <pubDate>Thu, 02 Jan 2025 12:54:04 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>Partition Management using go_partman</title>
+      <link>https://raymondtukpe.com/partition-management-using-go-partman.html</link>
+      <guid>https://raymondtukpe.com/partition-management-using-go-partman.html</guid>
+      <pubDate>Thu, 02 Jan 2025 10:24:16 GMT</pubDate>
+      
+        
+        
+      <description>&lt;p&gt;[go_partman) is a Go native implementation of PostgreSQL table partitioning management, inspired by &lt;a href=&quot;https://github.com/pgpartman</description>
+        
+      
+      
+      
+      
+      
+      <category domain="https://raymondtukpe.com/tags/tech/">tech</category>
+      
+      <category domain="https://raymondtukpe.com/tags/convoy/">convoy</category>
+      
+      <category domain="https://raymondtukpe.com/tags/guide/">guide</category>
+      
+      
+      <comments>https://raymondtukpe.com/partition-management-using-go-partman.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>You Can Just Do Things</title>
@@ -42,7 +68,7 @@
       <title>Exploring alternatives to UUIDv4; Enter ULIDs.</title>
       <link>https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html</link>
       <guid>https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html</guid>
-      <pubDate>Sat, 28 Dec 2024 13:05:40 GMT</pubDate>
+      <pubDate>Thu, 28 Nov 2024 13:05:40 GMT</pubDate>
       
       <description>UUIDv4 and ULID are both types of unique identifiers that can be used in distributed systems. UUIDv4 stands for Universally Unique Identifier version 4, and ULID stands for Universally Unique Lexicographically Sortable Identifier.</description>
       
@@ -52,9 +78,9 @@
       
       <category domain="https://raymondtukpe.com/tags/tech/">tech</category>
       
-      <category domain="https://raymondtukpe.com/tags/uuid/">uuid</category>
-      
       <category domain="https://raymondtukpe.com/tags/convoy/">convoy</category>
+      
+      <category domain="https://raymondtukpe.com/tags/uuid/">uuid</category>
       
       
       <comments>https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html#disqus_thread</comments>
@@ -102,32 +128,6 @@
       
       
       <comments>https://raymondtukpe.com/2023.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>TIL - DNS Roundrobin</title>
-      <link>https://raymondtukpe.com/til-dns-roundrobin.html</link>
-      <guid>https://raymondtukpe.com/til-dns-roundrobin.html</guid>
-      <pubDate>Fri, 12 May 2023 09:02:06 GMT</pubDate>
-      
-        
-        
-      <description>&lt;p&gt;DNS round-robin is a simple and widely-used technique for load balancing and distributing incoming network traffic across multiple server</description>
-        
-      
-      
-      
-      
-      
-      <category domain="https://raymondtukpe.com/tags/today-i-learned/">today i learned</category>
-      
-      <category domain="https://raymondtukpe.com/tags/dns/">dns</category>
-      
-      <category domain="https://raymondtukpe.com/tags/load-balancing/">load balancing</category>
-      
-      
-      <comments>https://raymondtukpe.com/til-dns-roundrobin.html#disqus_thread</comments>
       
     </item>
     
