@@ -9,7 +9,7 @@
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>Hi! 👋 I&#39;m Raymond Tukpe</description>
-    <pubDate>Thu, 02 Jan 2025 12:54:04 GMT</pubDate>
+    <pubDate>Thu, 02 Jan 2025 15:02:41 GMT</pubDate>
     <generator>http://hexo.io/</generator>
     
     <item>
@@ -20,7 +20,7 @@
       
         
         
-      <description>&lt;p&gt;[go_partman) is a Go native implementation of PostgreSQL table partitioning management, inspired by &lt;a href=&quot;https://github.com/pgpartman</description>
+      <description>&lt;p&gt;&lt;a href=&quot;https://github.com/jirevwe/go_partman&quot;&gt;go_partman&lt;/a&gt; is a Go native implementation of PostgreSQL table partitioning management,</description>
         
       
       
