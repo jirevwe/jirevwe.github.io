@@ -9,8 +9,35 @@
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>Hi! 👋 I&#39;m Raymond Tukpe</description>
-    <pubDate>Thu, 02 Jan 2025 15:02:41 GMT</pubDate>
+    <pubDate>Sun, 05 Jan 2025 15:11:58 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>SQLite NUlls are Weird!</title>
+      <link>https://raymondtukpe.com/sqlite-nulls-are-weird.html</link>
+      <guid>https://raymondtukpe.com/sqlite-nulls-are-weird.html</guid>
+      <pubDate>Sun, 05 Jan 2025 11:54:41 GMT</pubDate>
+      
+        
+        
+      <description>&lt;p&gt;To demonstrate how it works, I want to show you something I learnt a while back.&lt;/p&gt;
+&lt;h1 id=&quot;SQLite-treats-NULLs-as-different-values&quot;&gt;&lt;a </description>
+        
+      
+      
+      
+      
+      
+      <category domain="https://raymondtukpe.com/tags/til/">til</category>
+      
+      <category domain="https://raymondtukpe.com/tags/tech/">tech</category>
+      
+      <category domain="https://raymondtukpe.com/tags/interactive/">interactive</category>
+      
+      
+      <comments>https://raymondtukpe.com/sqlite-nulls-are-weird.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>Partition Management using go_partman</title>
@@ -108,28 +135,6 @@
       
       
       <comments>https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>Setting up your own VPN using WireGuard</title>
-      <link>https://raymondtukpe.com/setting-up-your-own-vpn-using-wireguard.html</link>
-      <guid>https://raymondtukpe.com/setting-up-your-own-vpn-using-wireguard.html</guid>
-      <pubDate>Thu, 28 Mar 2024 11:42:35 GMT</pubDate>
-      
-        
-        
-      <description>&lt;p&gt;You need a VM (droplet in Digital Ocean or an EC2 machine in AWS) in a cloud platform.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;First enable packet forwarding&lt;/p&gt;</description>
-        
-      
-      
-      
-      
-      
-      
-      <comments>https://raymondtukpe.com/setting-up-your-own-vpn-using-wireguard.html#disqus_thread</comments>
       
     </item>
     

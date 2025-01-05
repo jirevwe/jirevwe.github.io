@@ -39,6 +39,10 @@
     
 <link rel="stylesheet" href="/css/style.css">
 
+    <!-- custom styles -->
+    
+<link rel="stylesheet" href="/css/custom.css">
+
     <!-- persian styles -->
     
     <!-- rss -->
@@ -48,6 +52,18 @@
     
 	<!-- mathjax -->
 	
+    <!-- codapi -->
+    <script src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
+
+    <script type="module">
+        import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+        window.PGlite = PGlite;
+    </script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -137,6 +153,26 @@
     
       
     
+    
+      <li class="post-item">
+        
+    <div class="meta">
+      
+        
+          <time datetime="2025-01-05T11:54:41.000Z" itemprop="datePublished">2025-01-05</time>
+        
+      
+    </div>
+
+
+        <span>
+    
+        <a class="" href="/sqlite-nulls-are-weird.html">SQLite NUlls are Weird!</a>
+    
+
+
+</span>
+      </li>
     
       <li class="post-item">
         

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="To demonstrate how it works, I want to show you something I learnt a while back. SQLite treats NULLs as different valuesYes, you read it right, SQLite does treat all NULL values differently, therefore">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQLite NUlls are Weird!">
+<meta property="og:url" content="https://raymondtukpe.com/sqlite-nulls-are-weird.html">
+<meta property="og:site_name" content="Raymond Tukpe">
+<meta property="og:description" content="To demonstrate how it works, I want to show you something I learnt a while back. SQLite treats NULLs as different valuesYes, you read it right, SQLite does treat all NULL values differently, therefore">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-01-05T11:54:41.000Z">
+<meta property="article:modified_time" content="2025-01-05T15:11:58.053Z">
+<meta property="article:author" content="Raymond Tukpe">
+<meta property="article:tag" content="til">
+<meta property="article:tag" content="tech">
+<meta property="article:tag" content="interactive">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>SQLite NUlls are Weird!</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- custom styles -->
+    
+<link rel="stylesheet" href="/css/custom.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Raymond Tukpe" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+    <!-- codapi -->
+    <script src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
+
+    <script type="module">
+        import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+        window.PGlite = PGlite;
+    </script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/partition-management-using-go-partman.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&text=SQLite NUlls are Weird!"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&is_video=false&description=SQLite NUlls are Weird!"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SQLite NUlls are Weird!&body=Check out this article: https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&name=SQLite NUlls are Weird!&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html&t=SQLite NUlls are Weird!"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQLite-treats-NULLs-as-different-values"><span class="toc-number">1.</span> <span class="toc-text">SQLite treats NULLs as different values</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-nulls-like-this"><span class="toc-number">1.1.</span> <span class="toc-text">Why are nulls like this?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ensuring-Uniqueness"><span class="toc-number">1.2.</span> <span class="toc-text">Ensuring Uniqueness</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">1.2.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-an-index"><span class="toc-number">1.2.2.</span> <span class="toc-text">Using an index</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Thanks"><span class="toc-number">2.</span> <span class="toc-text">Thanks</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        SQLite NUlls are Weird!
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Raymond Tukpe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-01-05T11:54:41.000Z" itemprop="datePublished">2025-01-05</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/interactive/" rel="tag">interactive</a>, <a class="tag-link-link" href="/tags/tech/" rel="tag">tech</a>, <a class="tag-link-link" href="/tags/til/" rel="tag">til</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>To demonstrate how it works, I want to show you something I learnt a while back.</p>
+<h1 id="SQLite-treats-NULLs-as-different-values"><a href="#SQLite-treats-NULLs-as-different-values" class="headerlink" title="SQLite treats NULLs as different values"></a>SQLite treats NULLs as different values</h1><p>Yes, you read it right, SQLite does treat all NULL values differently, therefore, a column with a UNIQUE constraint can have multiple NULL values. That is weird I know and can be confusing coming from a database like Postgres, MySQL, or even MongoDB. And I’ll prove it with some examples!</p>
+<p>First we create our schema we’ll use to test throughout this post. Then we’ll insert two records which normally should not be allowed to be inserted.</p>
+<pre><code>drop table if exists sample;
+create table if not exists sample (
+    id TEXT primary key,
+    email TEXT,
+    deleted_at TEXT,
+    UNIQUE(email, deleted_at)
+) strict;
+
+insert into sample (id, email, deleted_at) values ('1', 'ray@mail.com', null);
+
+-- This will not fail because the constraint doesn't hold
+insert into sample (id, email, deleted_at) values ('2', 'ray@mail.com', null);
+
+-- check the content of the sample table
+select * from sample;
+</code></pre>
+<p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
+<p>That’s odd right? Ok, first let’s confirm that our table actually has the constraint.</p>
+<pre><code>drop table if exists sample;
+create table if not exists sample (
+    id TEXT primary key,
+    email TEXT,
+    deleted_at TEXT,
+    UNIQUE(email, deleted_at)
+) strict;
+
+-- check to see if our constraint was actually defined as part of the table
+SELECT sql FROM sqlite_schema WHERE name = 'sample';
+</code></pre>
+<p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
+<p>If you ran the snippets you can see that both rows were actually inserted into the table and that the constraint was actually defined in the table. So now we have two questions:</p>
+<ol>
+<li>Why does this happen?</li>
+<li>How can we ensure uniqueness when using two keys in SQLite?</li>
+</ol>
+<h2 id="Why-are-nulls-like-this"><a href="#Why-are-nulls-like-this" class="headerlink" title="Why are nulls like this?"></a>Why are nulls like this?</h2><p>blw bkw bkw why? ref: <a target="_blank" rel="noopener" href="https://www.sqlite.org/nulls.html">https://www.sqlite.org/nulls.html</a></p>
+<h2 id="Ensuring-Uniqueness"><a href="#Ensuring-Uniqueness" class="headerlink" title="Ensuring Uniqueness"></a>Ensuring Uniqueness</h2><p>We’ll explore two ways to mitigate this.</p>
+<h3 id="Using-a-generate-column"><a href="#Using-a-generate-column" class="headerlink" title="Using a generate column"></a>Using a generate column</h3><pre><code>drop table if exists sample;
+CREATE TABLE sample (
+    id TEXT PRIMARY KEY,
+    email TEXT,
+    deleted_at TEXT,
+    deleted_at_coalesced TEXT GENERATED ALWAYS AS (COALESCE(deleted_at, '1970-01-01T00:00:00.000Z')) STORED,
+    UNIQUE(email, deleted_at_coalesced)
+) STRICT;
+
+insert into sample (id, email, deleted_at) values ('1', 'ray@mail.com', null);
+
+-- This will fail due to because of the constraint on the email and the generated column. Uncomment it to test it out
+-- insert into sample (id, email, deleted_at) values ('2', 'ray@mail.com', null);
+
+insert into sample (id, email, deleted_at) values ('3', 'ray@mail.com', '2024-11-12T00:00:00.000Z');
+
+insert into sample (id, email, deleted_at) values ('4', 'ray@mail.com', '2024-11-11T01:00:00.000Z');
+
+insert into sample (id, email, deleted_at) values ('6', 'different@mail.com', null);
+
+update sample set deleted_at = '2024-11-11T02:00:00.000Z' where deleted_at is null;
+
+insert into sample (id, email, deleted_at) values ('7', 'different@mail.com', null);
+
+update sample set deleted_at = '2024-11-11T03:00:00.000Z' where deleted_at is null;
+
+insert into sample (id, email, deleted_at) values ('8', 'different@mail.com', null);
+
+select * from sample;
+</code></pre>
+
+<p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
+<h3 id="Using-an-index"><a href="#Using-an-index" class="headerlink" title="Using an index"></a>Using an index</h3><p>We’re going to be using an index on both the <code>email</code> and <code>deleted_at</code> fields.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CREATE UNIQUE INDEX if not exists idx_sample_null_deleted_at</span><br><span class="line">    ON sample(email) WHERE deleted_at IS NULL;</span><br></pre></td></tr></table></figure>
+
+<p>Let’s test it now, we’ll insert some records, update them and insert similar conflicting records. We’ll be using <code>strftime(&#39;%Y-%m-%dT%H:%M:%fZ&#39;)</code> as our <code>now()</code> function. he value of <code>strftime(&#39;%Y-%m-%dT%H:%M:%fZ&#39;)</code> is the same in the same transaction</p>
+<pre><code>drop table if exists sample;
+create table if not exists sample (
+    id TEXT primary key,
+    email TEXT,
+    deleted_at TEXT
+) strict;
+
+CREATE UNIQUE INDEX if not exists idx_sample_null_deleted_at
+    ON sample(email) WHERE deleted_at IS NULL;
+
+insert into sample (id, email, deleted_at) values ('1', 'ray@mail.com', null);
+
+-- This will fail due to idx_sample_null_deleted_at, uncomment it to test it out
+-- insert into sample (id, email, deleted_at) values ('2', 'ray@mail.com', null);
+
+insert into sample (id, email, deleted_at) values ('3', 'ray@mail.com', '2024-11-12T00:00:00.000Z');
+
+insert into sample (id, email, deleted_at) values ('4', 'ray@mail.com', '2024-11-11T01:00:00.000Z');
+
+insert into sample (id, email, deleted_at) values ('6', 'different@mail.com', null);
+
+update sample set deleted_at = strftime('%Y-%m-%dT%H:%M:%fZ') where deleted_at is null;
+
+insert into sample (id, email, deleted_at) values ('7', 'different@mail.com', null);
+
+update sample set deleted_at = strftime('%Y-%m-%dT%H:%M:%fZ') where deleted_at is null;
+
+insert into sample (id, email, deleted_at) values ('8', 'different@mail.com', null);
+
+select * from sample;
+
+</code></pre>
+
+<p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
+<p>As seen in the results using an index is the best way to ensure the unique constraint is held.</p>
+<h1 id="Thanks"><a href="#Thanks" class="headerlink" title="Thanks"></a>Thanks</h1><p>In my last post I wanted to add interactive SQL scripts to it so users could run the tests in their browser as they were reading th post. Fortunately, I had been following <a target="_blank" rel="noopener" href="https://x.com/ohmypy">Anton</a> for a while and figured it was time to finally integrate <a target="_blank" rel="noopener" href="https://github.com/nalgeon/codapi">Codapi</a>. This post won’t have been possible without Codapi. </p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Blog</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQLite-treats-NULLs-as-different-values"><span class="toc-number">1.</span> <span class="toc-text">SQLite treats NULLs as different values</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-nulls-like-this"><span class="toc-number">1.1.</span> <span class="toc-text">Why are nulls like this?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ensuring-Uniqueness"><span class="toc-number">1.2.</span> <span class="toc-text">Ensuring Uniqueness</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">1.2.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-an-index"><span class="toc-number">1.2.2.</span> <span class="toc-text">Using an index</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Thanks"><span class="toc-number">2.</span> <span class="toc-text">Thanks</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&text=SQLite NUlls are Weird!"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&is_video=false&description=SQLite NUlls are Weird!"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SQLite NUlls are Weird!&body=Check out this article: https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&name=SQLite NUlls are Weird!&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html&t=SQLite NUlls are Weird!"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    Raymond Tukpe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WBT5Z15WML"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-WBT5Z15WML');
+    </script>
+
+<!-- Mix Panel -->
+
+  <script type="text/javascript">
+    (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
+    for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".split(" ");a.get_group=function(){function b(c){d[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));a.push([e,call2])}}for(var d={},e=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<j.length;c++)b(j[c]);return d};b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?
+    MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+    
+    // Enabling the debug mode flag is useful during implementation,
+    // but it's recommended you remove it for production
+    mixpanel.init('9610491ecd39092940c531190faae9e7', {ignore_dnt: true}); 
+    mixpanel.track('Viewed'); 
+    </script>
+    
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

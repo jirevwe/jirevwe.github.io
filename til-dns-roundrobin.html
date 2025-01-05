@@ -14,9 +14,9 @@
 <meta property="og:description" content="DNS round-robin is a simple and widely-used technique for load balancing and distributing incoming network traffic across multiple servers or IP addresses. In DNS round-robin, a single hostname is ass">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-05-12T09:02:06.000Z">
-<meta property="article:modified_time" content="2024-12-28T12:56:57.157Z">
+<meta property="article:modified_time" content="2025-01-05T13:37:30.726Z">
 <meta property="article:author" content="Raymond Tukpe">
-<meta property="article:tag" content="today i learned">
+<meta property="article:tag" content="til">
 <meta property="article:tag" content="dns">
 <meta property="article:tag" content="load balancing">
 <meta name="twitter:card" content="summary">
@@ -44,6 +44,10 @@
     
 <link rel="stylesheet" href="/css/style.css">
 
+    <!-- custom styles -->
+    
+<link rel="stylesheet" href="/css/custom.css">
+
     <!-- persian styles -->
     
     <!-- rss -->
@@ -53,6 +57,18 @@
     
 	<!-- mathjax -->
 	
+    <!-- codapi -->
+    <script src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
+
+    <script type="module">
+        import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+        window.PGlite = PGlite;
+    </script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -143,7 +159,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link-link" href="/tags/dns/" rel="tag">dns</a>, <a class="tag-link-link" href="/tags/load-balancing/" rel="tag">load balancing</a>, <a class="tag-link-link" href="/tags/today-i-learned/" rel="tag">today i learned</a>
+        <a class="tag-link-link" href="/tags/dns/" rel="tag">dns</a>, <a class="tag-link-link" href="/tags/load-balancing/" rel="tag">load balancing</a>, <a class="tag-link-link" href="/tags/til/" rel="tag">til</a>
     </div>
 
 

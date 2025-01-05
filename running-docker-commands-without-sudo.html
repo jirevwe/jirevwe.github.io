@@ -43,6 +43,10 @@
     
 <link rel="stylesheet" href="/css/style.css">
 
+    <!-- custom styles -->
+    
+<link rel="stylesheet" href="/css/custom.css">
+
     <!-- persian styles -->
     
     <!-- rss -->
@@ -52,6 +56,18 @@
     
 	<!-- mathjax -->
 	
+    <!-- codapi -->
+    <script src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
+
+    <script type="module">
+        import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+        window.PGlite = PGlite;
+    </script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -154,19 +170,19 @@
     <h1 id="Run-Docker-commands-without-sudo"><a href="#Run-Docker-commands-without-sudo" class="headerlink" title="Run Docker commands without sudo"></a>Run Docker commands without sudo</h1><ol>
 <li>Add the <code>docker</code> group if it doesn’t already exist</li>
 </ol>
-<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">sudo groupadd docker</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> groupadd docker</span></span><br></pre></td></tr></table></figure>
 
 <ol start="2">
 <li>Add the connected user <code>$USER</code> to the docker group</li>
 </ol>
 <p><code>$USER</code> will be set to the currently logged in user</p>
-<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">sudo gpasswd -a <span class="variable">$USER</span> docker</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> gpasswd -a <span class="variable">$USER</span> docker</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>IMPORTANT</strong>: Log out and log back in so that your group membership is re-evaluated. I had to restart my PC for some reason to get it to work.</p>
 <ol start="3">
 <li>Restart the <code>docker</code> daemon</li>
 </ol>
-<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">sudo service docker restart</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">sudo</span> service docker restart</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h2><p>You can read more about it <a target="_blank" rel="noopener" href="https://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo">here</a> and [here] (<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user">https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user</a>)</p>
 
