@@ -9,28 +9,27 @@
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>Hi! 👋 I&#39;m Raymond Tukpe</description>
-    <pubDate>Sun, 05 Jan 2025 15:11:58 GMT</pubDate>
+    <pubDate>Sun, 05 Jan 2025 15:33:31 GMT</pubDate>
     <generator>http://hexo.io/</generator>
     
     <item>
-      <title>SQLite NUlls are Weird!</title>
+      <title>SQLite NULLs are Weird!</title>
       <link>https://raymondtukpe.com/sqlite-nulls-are-weird.html</link>
       <guid>https://raymondtukpe.com/sqlite-nulls-are-weird.html</guid>
       <pubDate>Sun, 05 Jan 2025 11:54:41 GMT</pubDate>
       
         
         
-      <description>&lt;p&gt;To demonstrate how it works, I want to show you something I learnt a while back.&lt;/p&gt;
-&lt;h1 id=&quot;SQLite-treats-NULLs-as-different-values&quot;&gt;&lt;a </description>
+      <description>&lt;p&gt;Yes, you read it right, SQLite does treat all NULL values differently, therefore, a column with a UNIQUE constraint can have multiple NUL</description>
         
       
       
       
       
       
-      <category domain="https://raymondtukpe.com/tags/til/">til</category>
-      
       <category domain="https://raymondtukpe.com/tags/tech/">tech</category>
+      
+      <category domain="https://raymondtukpe.com/tags/til/">til</category>
       
       <category domain="https://raymondtukpe.com/tags/interactive/">interactive</category>
       

@@ -6,18 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="To demonstrate how it works, I want to show you something I learnt a while back. SQLite treats NULLs as different valuesYes, you read it right, SQLite does treat all NULL values differently, therefore">
+    <meta name="description" content="Yes, you read it right, SQLite does treat all NULL values differently, therefore, a column with a UNIQUE constraint can have multiple NULL values. It can be confusing coming from a database like Postg">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SQLite NUlls are Weird!">
+<meta property="og:title" content="SQLite NULLs are Weird!">
 <meta property="og:url" content="https://raymondtukpe.com/sqlite-nulls-are-weird.html">
 <meta property="og:site_name" content="Raymond Tukpe">
-<meta property="og:description" content="To demonstrate how it works, I want to show you something I learnt a while back. SQLite treats NULLs as different valuesYes, you read it right, SQLite does treat all NULL values differently, therefore">
+<meta property="og:description" content="Yes, you read it right, SQLite does treat all NULL values differently, therefore, a column with a UNIQUE constraint can have multiple NULL values. It can be confusing coming from a database like Postg">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-01-05T11:54:41.000Z">
-<meta property="article:modified_time" content="2025-01-05T15:11:58.053Z">
+<meta property="article:modified_time" content="2025-01-05T15:33:31.216Z">
 <meta property="article:author" content="Raymond Tukpe">
-<meta property="article:tag" content="til">
 <meta property="article:tag" content="tech">
+<meta property="article:tag" content="til">
 <meta property="article:tag" content="interactive">
 <meta name="twitter:card" content="summary">
     
@@ -39,7 +39,7 @@
       
     
     <!-- title -->
-    <title>SQLite NUlls are Weird!</title>
+    <title>SQLite NULLs are Weird!</title>
     <!-- styles -->
     
 <link rel="stylesheet" href="/css/style.css">
@@ -108,21 +108,21 @@
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&text=SQLite NUlls are Weird!"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&is_video=false&description=SQLite NUlls are Weird!"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=SQLite NUlls are Weird!&body=Check out this article: https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&name=SQLite NUlls are Weird!&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html&t=SQLite NUlls are Weird!"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&text=SQLite NULLs are Weird!"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&is_video=false&description=SQLite NULLs are Weird!"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SQLite NULLs are Weird!&body=Check out this article: https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&name=SQLite NULLs are Weird!&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html&t=SQLite NULLs are Weird!"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQLite-treats-NULLs-as-different-values"><span class="toc-number">1.</span> <span class="toc-text">SQLite treats NULLs as different values</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-nulls-like-this"><span class="toc-number">1.1.</span> <span class="toc-text">Why are nulls like this?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ensuring-Uniqueness"><span class="toc-number">1.2.</span> <span class="toc-text">Ensuring Uniqueness</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">1.2.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-an-index"><span class="toc-number">1.2.2.</span> <span class="toc-text">Using an index</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Thanks"><span class="toc-number">2.</span> <span class="toc-text">Thanks</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-nulls-like-this"><span class="toc-number">1.</span> <span class="toc-text">Why are nulls like this?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ensuring-Uniqueness"><span class="toc-number">2.</span> <span class="toc-text">Ensuring Uniqueness</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">2.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-an-index"><span class="toc-number">2.2.</span> <span class="toc-text">Using an index</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Acknowledgements"><span class="toc-number">3.</span> <span class="toc-text">Acknowledgements</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -134,7 +134,7 @@
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
-        SQLite NUlls are Weird!
+        SQLite NULLs are Weird!
     </h1>
 
 
@@ -166,8 +166,7 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>To demonstrate how it works, I want to show you something I learnt a while back.</p>
-<h1 id="SQLite-treats-NULLs-as-different-values"><a href="#SQLite-treats-NULLs-as-different-values" class="headerlink" title="SQLite treats NULLs as different values"></a>SQLite treats NULLs as different values</h1><p>Yes, you read it right, SQLite does treat all NULL values differently, therefore, a column with a UNIQUE constraint can have multiple NULL values. That is weird I know and can be confusing coming from a database like Postgres, MySQL, or even MongoDB. And I’ll prove it with some examples!</p>
+    <p>Yes, you read it right, SQLite does treat all NULL values differently, therefore, a column with a UNIQUE constraint can have multiple NULL values. It can be confusing coming from a database like Postgres, MySQL, or even MongoDB. And I’ll prove it with some examples! I learnt a while back while working on <a target="_blank" rel="noopener" href="https://github.com/jirevwe/litequeue">LiteQueue</a>: a Golang a queueing library.</p>
 <p>First we create our schema we’ll use to test throughout this post. Then we’ll insert two records which normally should not be allowed to be inserted.</p>
 <pre><code>drop table if exists sample;
 create table if not exists sample (
@@ -277,7 +276,7 @@ select * from sample;
 
 <p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
 <p>As seen in the results using an index is the best way to ensure the unique constraint is held.</p>
-<h1 id="Thanks"><a href="#Thanks" class="headerlink" title="Thanks"></a>Thanks</h1><p>In my last post I wanted to add interactive SQL scripts to it so users could run the tests in their browser as they were reading th post. Fortunately, I had been following <a target="_blank" rel="noopener" href="https://x.com/ohmypy">Anton</a> for a while and figured it was time to finally integrate <a target="_blank" rel="noopener" href="https://github.com/nalgeon/codapi">Codapi</a>. This post won’t have been possible without Codapi. </p>
+<h2 id="Acknowledgements"><a href="#Acknowledgements" class="headerlink" title="Acknowledgements"></a>Acknowledgements</h2><p>In my last post I wanted to add interactive SQL scripts to it so users could run the tests in their browser as they were reading th post. Fortunately, I had been following <a target="_blank" rel="noopener" href="https://x.com/ohmypy">Anton</a> for a while and figured it was time to finally integrate <a target="_blank" rel="noopener" href="https://github.com/nalgeon/codapi">Codapi</a>. This post won’t have been possible without Codapi. </p>
 
   </div>
 </article>
@@ -301,22 +300,22 @@ select * from sample;
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQLite-treats-NULLs-as-different-values"><span class="toc-number">1.</span> <span class="toc-text">SQLite treats NULLs as different values</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-nulls-like-this"><span class="toc-number">1.1.</span> <span class="toc-text">Why are nulls like this?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ensuring-Uniqueness"><span class="toc-number">1.2.</span> <span class="toc-text">Ensuring Uniqueness</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">1.2.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-an-index"><span class="toc-number">1.2.2.</span> <span class="toc-text">Using an index</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Thanks"><span class="toc-number">2.</span> <span class="toc-text">Thanks</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-nulls-like-this"><span class="toc-number">1.</span> <span class="toc-text">Why are nulls like this?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ensuring-Uniqueness"><span class="toc-number">2.</span> <span class="toc-text">Ensuring Uniqueness</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">2.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-an-index"><span class="toc-number">2.2.</span> <span class="toc-text">Using an index</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Acknowledgements"><span class="toc-number">3.</span> <span class="toc-text">Acknowledgements</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
       <ul>
   <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&text=SQLite NUlls are Weird!"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&is_video=false&description=SQLite NUlls are Weird!"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=SQLite NUlls are Weird!&body=Check out this article: https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NUlls are Weird!"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&name=SQLite NUlls are Weird!&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html&t=SQLite NUlls are Weird!"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&text=SQLite NULLs are Weird!"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&is_video=false&description=SQLite NULLs are Weird!"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SQLite NULLs are Weird!&body=Check out this article: https://raymondtukpe.com/sqlite-nulls-are-weird.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&title=SQLite NULLs are Weird!"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/sqlite-nulls-are-weird.html&name=SQLite NULLs are Weird!&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/sqlite-nulls-are-weird.html&t=SQLite NULLs are Weird!"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
