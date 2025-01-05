@@ -7,7 +7,7 @@ tags:
   - guide
 ---
 
-[go_partman) is a Go native implementation of PostgreSQL table partitioning management, inspired by [pg_partman](https://github.com/pgpartman/pg_partman). It automatically manages and maintains partitioned tables in PostgreSQL databases by providing the following features:
+[go_partman](https://github.com/jirevwe/go_partman) is a Go native implementation of PostgreSQL table partitioning management, inspired by [pg_partman](https://github.com/pgpartman/pg_partman). It automatically manages and maintains partitioned tables in PostgreSQL databases by providing the following features:
 - Pre-creation of future partitions
 - Support for time-based range partitioning
 - Configurable tenant-specific retention policies

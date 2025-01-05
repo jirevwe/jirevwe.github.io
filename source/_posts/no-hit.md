@@ -6,7 +6,6 @@ tags:
   - dreams
 ---
 
-NO HIT
 Dare woke with a start, his chest heaving from yet another nightmare about his time in the cult. The memories clung to him like a shadow he couldn’t escape. The smell of frying chicken and fish wafted through the house, pulling him from his thoughts. His sister, Ugonnaya, was busy in the kitchen, mixing the sizzling of oil and vinegar with the calm of the holiday.
 
 A knock at the door broke the quiet. Frowning, Dare got up, muttering to himself, "It's Christmas. Nobody visits us on Christmas." He opened the door, and his heart skipped a beat. Standing there was someone from his past—a former cult member. But not just anyone—his ex-girlfriend. Something about her was off. Her demeanor was different, and she carried herself as if she were a completely different person. He hesitated, then asked, "What do you want?" She smiled. "I just wanted to check in on you, Dare," her voice unnervingly light as she replied.
