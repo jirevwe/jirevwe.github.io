@@ -1,4 +1,8 @@
 /* 
  * Custom styles for raymondtukpe.com
  * Add your custom CSS rules below
- */ 
+ */
+
+pre:focus, code:focus {
+    outline: none;
+}
