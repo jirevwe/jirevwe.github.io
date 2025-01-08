@@ -55,18 +55,45 @@
     
 	<!-- mathjax -->
 	
-    <!-- codapi -->
+    <!-- codapi css -->
+    <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
+
+    <!-- codapi sqlite   -->
     <script src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
     <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
 
-    <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
-
-    <script type="module">
-        import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
-        window.PGlite = PGlite;
-    </script>
-    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
+    <!-- codapi  -->
     <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
+
+    <!-- code highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeBlocks = document.querySelectorAll('code[contenteditable="true"]');
+
+            codeBlocks.forEach(block => {
+                // Handle blur event (clicking out of the block)
+                block.addEventListener('blur', () => {
+                    block.innerHTML = block.textContent;
+                    Prism.highlightElement(block);
+                });
+
+                // Handle tab key
+                block.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        document.execCommand('insertText', false, '    ');
+                    }
+                });
+            });
+        });
+    </script>
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">

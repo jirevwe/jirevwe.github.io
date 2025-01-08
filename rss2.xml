@@ -9,7 +9,7 @@
     <atom:link href="https://raymondtukpe.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>Hi! 👋 I&#39;m Raymond Tukpe</description>
-    <pubDate>Tue, 07 Jan 2025 19:32:11 GMT</pubDate>
+    <pubDate>Wed, 08 Jan 2025 22:31:45 GMT</pubDate>
     <generator>http://hexo.io/</generator>
     
     <item>
@@ -20,16 +20,16 @@
       
         
         
-      <description>&lt;p&gt;Yes, you read it right, SQL does treat all NULL values differently. Therefore, a column with a UNIQUE constraint can have multiple NULL v</description>
+      <description>&lt;p&gt;Yes, you read it right, SQL does treat all NULL values differently. I learnt this a while back while working on &lt;a href=&quot;https://getconvo</description>
         
       
       
       
       
       
-      <category domain="https://raymondtukpe.com/tags/til/">til</category>
-      
       <category domain="https://raymondtukpe.com/tags/tech/">tech</category>
+      
+      <category domain="https://raymondtukpe.com/tags/til/">til</category>
       
       <category domain="https://raymondtukpe.com/tags/interactive/">interactive</category>
       

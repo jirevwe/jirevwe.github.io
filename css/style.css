@@ -1608,6 +1608,10 @@ code {
   border-radius: 2px;
   -webkit-border-radius: 2px;
 }
+pre:focus,
+code:focus {
+  outline: none;
+}
 .highlight {
   overflow-x: auto;
   margin: 1rem 0;

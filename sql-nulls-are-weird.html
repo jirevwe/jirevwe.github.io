@@ -6,18 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="Yes, you read it right, SQL does treat all NULL values differently. Therefore, a column with a UNIQUE constraint can have multiple NULL values, because each NULL value is an actual value that is diffe">
+    <meta name="description" content="Yes, you read it right, SQL does treat all NULL values differently. I learnt this a while back while working on Convoy and again on LiteQueue: a Golang a queueing library.  Basically, a column with a">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SQL NULLs are Weird!">
 <meta property="og:url" content="https://raymondtukpe.com/sql-nulls-are-weird.html">
 <meta property="og:site_name" content="Raymond Tukpe">
-<meta property="og:description" content="Yes, you read it right, SQL does treat all NULL values differently. Therefore, a column with a UNIQUE constraint can have multiple NULL values, because each NULL value is an actual value that is diffe">
+<meta property="og:description" content="Yes, you read it right, SQL does treat all NULL values differently. I learnt this a while back while working on Convoy and again on LiteQueue: a Golang a queueing library.  Basically, a column with a">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-01-05T11:54:41.000Z">
-<meta property="article:modified_time" content="2025-01-07T19:32:11.359Z">
+<meta property="article:modified_time" content="2025-01-08T22:31:45.125Z">
 <meta property="article:author" content="Raymond Tukpe">
-<meta property="article:tag" content="til">
 <meta property="article:tag" content="tech">
+<meta property="article:tag" content="til">
 <meta property="article:tag" content="interactive">
 <meta name="twitter:card" content="summary">
     
@@ -57,18 +57,45 @@
     
 	<!-- mathjax -->
 	
-    <!-- codapi -->
+    <!-- codapi css -->
+    <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
+
+    <!-- codapi sqlite   -->
     <script src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
     <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
 
-    <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
-
-    <script type="module">
-        import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
-        window.PGlite = PGlite;
-    </script>
-    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
+    <!-- codapi  -->
     <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
+
+    <!-- code highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeBlocks = document.querySelectorAll('code[contenteditable="true"]');
+
+            codeBlocks.forEach(block => {
+                // Handle blur event (clicking out of the block)
+                block.addEventListener('blur', () => {
+                    block.innerHTML = block.textContent;
+                    Prism.highlightElement(block);
+                });
+
+                // Handle tab key
+                block.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        document.execCommand('insertText', false, '    ');
+                    }
+                });
+            });
+        });
+    </script>
 <meta name="generator" content="Hexo 6.3.0"></head>
 
 <body class="max-width mx-auto px3 ltr">
@@ -122,7 +149,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#What-about-Uniqueness"><span class="toc-number">1.</span> <span class="toc-text">What about Uniqueness?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-does-this-happen"><span class="toc-number">2.</span> <span class="toc-text">Why does this happen?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-NULLs-handled-this-way"><span class="toc-number">3.</span> <span class="toc-text">Why are NULLs handled this way?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-then-can-we-ensure-uniqueness"><span class="toc-number">4.</span> <span class="toc-text">How then can we ensure uniqueness?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">4.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-an-index"><span class="toc-number">4.2.</span> <span class="toc-text">Using an index</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">5.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Establishing-a-baseline"><span class="toc-number">1.</span> <span class="toc-text">Establishing a baseline</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#What-about-Uniqueness"><span class="toc-number">2.</span> <span class="toc-text">What about Uniqueness?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-does-this-happen"><span class="toc-number">3.</span> <span class="toc-text">Why does this happen?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-NULLs-handled-this-way"><span class="toc-number">4.</span> <span class="toc-text">Why are NULLs handled this way?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-then-can-we-ensure-uniqueness"><span class="toc-number">5.</span> <span class="toc-text">How then can we ensure uniqueness?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">5.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-partial-index"><span class="toc-number">5.2.</span> <span class="toc-text">Using a partial index</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">6.</span> <span class="toc-text">Conclusion</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -166,18 +193,20 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>Yes, you read it right, SQL does treat all NULL values differently. Therefore, a column with a UNIQUE constraint can have multiple NULL values, because each NULL value is an actual value that is different from another, this isn’t readily obvious if you’re used to using an ORM. The SQL based databases I tested SQLite, Postgres and MySQL all behave like this, and I’ll prove it with some examples! I learnt a while back while working on <a target="_blank" rel="noopener" href="https://github.com/jirevwe/litequeue">LiteQueue</a>: a Golang a queueing library.</p>
-<p>First, let’s establish a baseline how this can be confusing. We’d compare different values to see how they can be compared using the logical equals (“=”) operator:</p>
-<pre><code>select '' = '';    -- Returns 1 (true) because empty strings are equal
+    <p>Yes, you read it right, SQL does treat all NULL values differently. I learnt this a while back while working on <a target="_blank" rel="noopener" href="https://getconvoy.io/">Convoy</a> and again on <a target="_blank" rel="noopener" href="https://github.com/jirevwe/litequeue">LiteQueue</a>: a Golang a queueing library. </p>
+<p>Basically, a column with a UNIQUE constraint can have multiple NULL values, because each NULL value is an actual value that is different from another NULL, this isn’t readily obvious if you’re used to using an ORM. The SQL based databases I tested SQLite, Postgres and MySQL all behave like this, and I’ll prove it with some examples!</p>
+<h2 id="Establishing-a-baseline"><a href="#Establishing-a-baseline" class="headerlink" title="Establishing a baseline"></a>Establishing a baseline</h2><p>First, let’s establish a baseline how this can be confusing. We’d compare different values to see how they can be compared using the logical equals (“=”) operator:</p>
+<pre><code class="lang-sql">select '' = '';    -- Returns 1 (true) because empty strings are equal
 select 1 = 1;      -- Returns 1 (true) because the numbers are equal
 select 1 = 0;      -- Returns 0 (false) because the numbers are different
-select null is null; -- Returns 1 (true) because IS checks for NULL identity
-select null = null; -- Returns NULL (null) because, wait what?
+select null = null; -- Returns NULL (null) because... wait what?
 </code></pre>
 <p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
-<p><code>select null = null;</code> returns NULL, because each NULL is basically a placeholder representing an “unknown value”. Two unknown values are not necessarily the same value; we can’t say that they are equal, because we don’t know the value of either of them. So it evaluates to an “unknown value” that’s obviously not “true” or “false”, which is why <code>NULL = NULL</code> returns <code>NULL</code>. Very weird, ikr! So now we’ve established that two NULL values in the same column are not considered equal using “=”; but remember we can use <code>IS</code>, because the <code>IS</code> operator checks for identity or rather if the type of both values are, well, NULL.</p>
-<p>I’ll demonstrate this using one more example, which shows that NULL values are not equal to each other, but string values are. The result will have all <code>equal_comparison</code> columns where two NULLs are compared to be NULL and all <code>is_comparison</code> columns where two NULLs are compared as 1; the string-to-string and string-to-null comparison results are pretty obvious. </p>
-<pre><code>drop table if exists sample;
+<p><code>select null = null;</code> returns NULL, because each NULL is basically a placeholder representing an “unknown value”. Two unknown values are not necessarily the same value; we can’t say that they are equal, because we don’t know the value of either of them. So it evaluates to an “unknown value” that’s obviously not “true” or “false”, which is why <code>NULL = NULL</code> returns <code>NULL</code>. Very weird, ikr! So now we’ve established that two NULL values in the same column are not considered equal using “=”; but we can use <code>IS</code>, because the <code>IS</code> operator checks for identity or rather if the type of both values are, well, NULL.</p>
+<pre><code class="lang-sql">select null is null; -- Returns 1 (true) because IS checks for NULL identity</code></pre>
+<p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
+<p>I’ll demonstrate this using one more example, which shows that NULL values are not equal to each other, but string (applies to other values as well) values are. The result will have all <code>equal_comparison</code> columns where two NULLs are compared to be NULL and all <code>is_comparison</code> columns where two NULLs are compared as 1; the string-to-string and string-to-null comparison results are pretty obvious. </p>
+<pre><code class="lang-sql">drop table if exists sample;
 CREATE TABLE if not exists sample (
      id INTEGER PRIMARY KEY, -- auto-increment
      value TEXT
@@ -200,7 +229,7 @@ WHERE a.id < b.id;
 </code></pre>
 <p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
 <h2 id="What-about-Uniqueness"><a href="#What-about-Uniqueness" class="headerlink" title="What about Uniqueness?"></a>What about Uniqueness?</h2><p>Well, they’ll break based on “normal” reasoning so if you just pair two columns and expect it to work, I have bad news for you :D. First we create our schema we’ll use to test throughout this post and confirm that our table actually has the constraint.</p>
-<pre><code>drop table if exists sample;
+<pre><code class="lang-sql">drop table if exists sample;
 create table if not exists sample (
     id TEXT primary key,
     email TEXT,
@@ -213,7 +242,7 @@ SELECT sql FROM sqlite_schema WHERE name = 'sample';
 </code></pre>
 <p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
 <p>Then we’ll insert two records which normally should not be allowed to be inserted.</p>
-<pre><code>drop table if exists sample;
+<pre><code class="lang-sql">drop table if exists sample;
 create table if not exists sample (
     id TEXT primary key,
     email TEXT,
@@ -237,15 +266,28 @@ select * from sample;
 <li>How then can we ensure uniqueness?</li>
 </ol>
 <h2 id="Why-does-this-happen"><a href="#Why-does-this-happen" class="headerlink" title="Why does this happen?"></a>Why does this happen?</h2><p>The two rows are actually unique, the first row <code>(&#39;ray@mail.com&#39;, NULL)</code> and the second row <code>(&#39;ray@mail.com&#39;, NULL)</code> are different because the NULL values as we saw above are different.</p>
-<h2 id="Why-are-NULLs-handled-this-way"><a href="#Why-are-NULLs-handled-this-way" class="headerlink" title="Why are NULLs handled this way?"></a>Why are NULLs handled this way?</h2><p>According to the <a target="_blank" rel="noopener" href="https://www.sqlite.org/nulls.html">SQLite docs</a>, SQLite (and other SQL compliant databases) was implemented like this to so that it handles NULLs in an SQL standards-compliant way. The <code>UNIQUE(email, deleted_at)</code> ensures no two rows have the same combination of email and deleted_at, but it allows multiple rows with the same email as long as deleted_at differs.</p>
+<h2 id="Why-are-NULLs-handled-this-way"><a href="#Why-are-NULLs-handled-this-way" class="headerlink" title="Why are NULLs handled this way?"></a>Why are NULLs handled this way?</h2><p>According to the <a target="_blank" rel="noopener" href="https://www.sqlite.org/nulls.html">SQLite docs</a>, SQLite (and other SQL compliant databases) was implemented like this so that it handles NULLs in line with the SQL standards specification ——if only we could read (or refer) it, I’ll comment on this at the end. The <code>UNIQUE(email, deleted_at)</code> constraint ensures no two rows have the same combination of email and deleted_at, but it allows multiple rows with the same email as long as deleted_at differs.</p>
 <h2 id="How-then-can-we-ensure-uniqueness"><a href="#How-then-can-we-ensure-uniqueness" class="headerlink" title="How then can we ensure uniqueness?"></a>How then can we ensure uniqueness?</h2><p>We’ll explore two ways to mitigate this.</p>
-<h3 id="Using-a-generate-column"><a href="#Using-a-generate-column" class="headerlink" title="Using a generate column"></a>Using a generate column</h3><pre><code>drop table if exists sample;
+<h3 id="Using-a-generate-column"><a href="#Using-a-generate-column" class="headerlink" title="Using a generate column"></a>Using a generate column</h3><p>To mitigate against the issue of NULLs not being a deterministic value we can create another field that always has a deterministic value. It will be a generated column that’s set ON INSERT and ON UPDATE. We can define that field thus:</p>
+<pre><code class="lang-sql">CREATE TABLE sample (
+    id TEXT PRIMARY KEY,
+    email TEXT,
+    deleted_at TEXT, -- nullable
+    _deleted_at_coalesced TEXT GENERATED ALWAYS 
+        AS (COALESCE(deleted_at, '1970-01-01')) STORED, -- not nullable
+    UNIQUE(email, _deleted_at_coalesced)
+) STRICT;
+</code></pre>
+
+<p>The new field <code>_deleted_at_coalesced</code> will be set to <code>&#39;1970-01-01&#39;</code> whenever <code>deleted_at</code> is <code>NULL</code>. This leads to an extra field making your table wider and larger (because the extra field takes space) which might be negligible for a small table but with millions of rows, that extra field’s existence uses up more space. </p>
+<p>Let’s test a full example using the generated field, you can play around with it adding <code>select * from sample;</code> after each line to see the steps.</p>
+<pre><code class="lang-sql">drop table if exists sample;
 CREATE TABLE sample (
     id TEXT PRIMARY KEY,
     email TEXT,
-    deleted_at TEXT,
-    deleted_at_coalesced TEXT GENERATED ALWAYS AS (COALESCE(deleted_at, '1970-01-01T00:00:00.000Z')) STORED,
-    UNIQUE(email, deleted_at_coalesced)
+    deleted_at TEXT, 
+    _deleted_at_coalesced TEXT GENERATED ALWAYS AS (COALESCE(deleted_at, '1970-01-01')) STORED, 
+    UNIQUE(email, _deleted_at_coalesced)
 ) STRICT;
 
 insert into sample (id, email, deleted_at) values ('1', 'ray@mail.com', null);
@@ -271,23 +313,48 @@ select * from sample;
 </code></pre>
 
 <p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
-<h3 id="Using-an-index"><a href="#Using-an-index" class="headerlink" title="Using an index"></a>Using an index</h3><p>We’re going to be using an index on both the <code>email</code> and <code>deleted_at</code> fields.</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CREATE UNIQUE INDEX if not exists idx_sample_null_deleted_at</span><br><span class="line">    ON sample(email) WHERE deleted_at IS NULL;</span><br></pre></td></tr></table></figure>
+<p>While this works, there’s a flaw, deleting the same record twice (basically when the tuple exists already) won’t work. Let’s test this.</p>
+<pre><code class="lang-sql">drop table if exists sample;
+CREATE TABLE sample (
+    id TEXT PRIMARY KEY,
+    email TEXT,
+    deleted_at TEXT, 
+    _deleted_at_coalesced TEXT GENERATED ALWAYS AS (COALESCE(deleted_at, '1970-01-01')) STORED, 
+    UNIQUE(email, _deleted_at_coalesced)
+) STRICT;
 
-<p>Let’s test it now, we’ll insert some records, update them and insert similar conflicting records. We’ll be using <code>strftime(&#39;%Y-%m-%dT%H:%M:%fZ&#39;)</code> as our <code>now()</code> function. he value of <code>strftime(&#39;%Y-%m-%dT%H:%M:%fZ&#39;)</code> is the same in the same transaction</p>
-<pre><code>drop table if exists sample;
+insert into sample (id, email, deleted_at) values ('1', 'ray@mail.com', null);
+
+update sample set deleted_at = '2024-11-11T03:00:00.000Z' where id is 1;
+
+insert into sample (id, email, deleted_at) values ('2', 'ray@mail.com', null);
+
+select * from sample;
+
+-- This will fail due to because of the email and generated column tuple already exists. Uncomment it to test it out
+-- update sample set deleted_at = '2024-11-11T03:00:00.000Z' where id is 2;
+</code></pre>
+<p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
+<h3 id="Using-a-partial-index"><a href="#Using-a-partial-index" class="headerlink" title="Using a partial index"></a>Using a partial index</h3><p>Now let’s explore a proper solution to the problem. Indexes also take up space, the size of which you can estimate in the database of your choice. Indexes also impact insert times, they are majorly influenced by how many indexes exist on the table and the combination of keys in those indexes. So use them wisely! </p>
+<p>We’re going to be using a partial index on <code>email</code> where the <code>deleted_at</code> field is <code>NULL</code>.</p>
+<pre><code class="lang-sql">CREATE UNIQUE INDEX if not exists idx_sample_email_deleted_at
+    ON sample(email) WHERE deleted_at IS NULL;
+</code></pre>
+
+<p>Let’s test it now, we’ll insert some records, update them and insert similar conflicting records.</p>
+<pre><code class="lang-sql">drop table if exists sample;
 create table if not exists sample (
     id TEXT primary key,
     email TEXT,
     deleted_at TEXT
 ) strict;
 
-CREATE UNIQUE INDEX if not exists idx_sample_null_deleted_at
+CREATE UNIQUE INDEX if not exists idx_sample_email_deleted_at
     ON sample(email) WHERE deleted_at IS NULL;
 
 insert into sample (id, email, deleted_at) values ('1', 'ray@mail.com', null);
 
--- This will fail due to idx_sample_null_deleted_at, uncomment it to test it out
+-- This will fail due to idx_sample_email_deleted_at, uncomment it to test it out
 -- insert into sample (id, email, deleted_at) values ('2', 'ray@mail.com', null);
 
 insert into sample (id, email, deleted_at) values ('3', 'ray@mail.com', '2024-11-12T00:00:00.000Z');
@@ -296,11 +363,11 @@ insert into sample (id, email, deleted_at) values ('4', 'ray@mail.com', '2024-11
 
 insert into sample (id, email, deleted_at) values ('6', 'different@mail.com', null);
 
-update sample set deleted_at = strftime('%Y-%m-%dT%H:%M:%fZ') where deleted_at is null;
+update sample set deleted_at = '2024-11-11T02:00:00.000Z' where deleted_at is null;
 
 insert into sample (id, email, deleted_at) values ('7', 'different@mail.com', null);
 
-update sample set deleted_at = strftime('%Y-%m-%dT%H:%M:%fZ') where deleted_at is null;
+update sample set deleted_at = '2024-11-11T03:00:00.000Z' where deleted_at is null;
 
 insert into sample (id, email, deleted_at) values ('8', 'different@mail.com', null);
 
@@ -309,7 +376,7 @@ select * from sample;
 </code></pre>
 
 <p><codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet></p>
-<p>As seen in the results using an index is the best way to ensure the unique constraint is held.</p>
+<p>Using a partial index is the best way to ensure the unique constraint is held without making your table wider, managing an extra field, it consumes less space and isn’t error-prone when deleting the same record pair over and over again! </p>
 <h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>While this might seem trivial to experienced engineers and invisible when you use an ORM, it’s often overlooked and can lead to confusion if you don’t know how it works.  Another fun thing I discovered is that the SQL standard document (think HTTP RFC but for SQL) isn’t publicly available, but can be procured for a fee</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=35567708">https://news.ycombinator.com/item?id=35567708</a></li>
@@ -338,7 +405,7 @@ select * from sample;
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#What-about-Uniqueness"><span class="toc-number">1.</span> <span class="toc-text">What about Uniqueness?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-does-this-happen"><span class="toc-number">2.</span> <span class="toc-text">Why does this happen?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-NULLs-handled-this-way"><span class="toc-number">3.</span> <span class="toc-text">Why are NULLs handled this way?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-then-can-we-ensure-uniqueness"><span class="toc-number">4.</span> <span class="toc-text">How then can we ensure uniqueness?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">4.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-an-index"><span class="toc-number">4.2.</span> <span class="toc-text">Using an index</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">5.</span> <span class="toc-text">Conclusion</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Establishing-a-baseline"><span class="toc-number">1.</span> <span class="toc-text">Establishing a baseline</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#What-about-Uniqueness"><span class="toc-number">2.</span> <span class="toc-text">What about Uniqueness?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-does-this-happen"><span class="toc-number">3.</span> <span class="toc-text">Why does this happen?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Why-are-NULLs-handled-this-way"><span class="toc-number">4.</span> <span class="toc-text">Why are NULLs handled this way?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-then-can-we-ensure-uniqueness"><span class="toc-number">5.</span> <span class="toc-text">How then can we ensure uniqueness?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-generate-column"><span class="toc-number">5.1.</span> <span class="toc-text">Using a generate column</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Using-a-partial-index"><span class="toc-number">5.2.</span> <span class="toc-text">Using a partial index</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">6.</span> <span class="toc-text">Conclusion</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
