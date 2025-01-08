@@ -21,7 +21,7 @@ To name a few:
 
 From the [UUIDv4 spec](https://datatracker.ietf.org/doc/html/rfc4122#section-4.4), it is constructed by generating random number.
 
-```UUIDv4 spec
+```text UUIDv4 spec
 Sample ID: 4fcc81d9-9512-4b2e-9267-b5e057d5007a
 
    4fcc81d9-9512-      4           b2e-            9          267-b5e057d5007a
@@ -42,7 +42,7 @@ Sample ID: 4fcc81d9-9512-4b2e-9267-b5e057d5007a
 ## ULID
 
 From the official [ULID spec](https://github.com/ulid/spec), it is constructed by concatenating a timestamp with a random suffix:
-```ULID spec
+```text ULID spec
 Sample ID: 01ARZ3NDEKTSV4RRFFQ69G5FAV
 
    01ARZ3NDEK        TSV4RRFFQ69G5FAV
@@ -74,13 +74,12 @@ When creating both **UUIDs** and **ULIDs**, the process of generating **ULIDs** 
 | **ULID** (`generate_ulid`)   | 262              | 845               | 5.9               |
 | **UUID** (`gen_random_uuid`) | 205              | 732               | 5.5               |
 
-```postgresql
-select generate_ulid(now()) FROM generate_series(1, 10000000);
+<pre><code class="lang-sql">select generate_ulid(now()) FROM generate_series(1, 10000000);
 -- 100m - 5.9s, 10m - 845ms, 1m - 262ms
 
 select gen_random_uuid() FROM generate_series(1, 10000000);
 -- 100m - 5.5s, 10m - 732ms, 1m - 205ms
-```
+</code></pre>
 
 ### Inserting
 When inserting **ULID**s, it takes about **3.27x longer** than **UUID**s inserts. This reflects the additional computational overhead for inserting **ULID**s.
@@ -90,8 +89,7 @@ When inserting **ULID**s, it takes about **3.27x longer** than **UUID**s inserts
 | **UUID Insert** (`gen_random_uuid`) | 1.76            | 18.10            | 187.51            |
 | **ULID Insert** (`generate_ulid`)   | 5.75            | 58.04            | 586.48            |
 
-```postgresql
-drop table uuid_test;
+<pre><code class="lang-sql">drop table uuid_test;
 drop table ulid_test;
 CREATE TABLE uuid_test(id UUID);
 CREATE TABLE ulid_test(id TEXT);
@@ -103,7 +101,7 @@ SELECT gen_random_uuid() FROM generate_series(1, 1000000);
 EXPLAIN ANALYSE INSERT INTO ulid_test(id)
 SELECT generate_ulid(now()) FROM generate_series(1, 1000000);
 -- 100m - 586484.947ms, 10m - 58038.249ms, 1m - 5745.083ms
-```
+</code></pre>
 
 ### Timing
 Timing information can be unintentionally exposed through **ULIDs**, revealing the speed at which a particular resource is generated. By analyzing ULIDs, it becomes possible to deduce the rate at which a service is generating events, thereby disclosing potentially valuable competitive data that should remain confidential.

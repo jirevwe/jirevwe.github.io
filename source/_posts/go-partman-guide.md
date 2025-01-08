@@ -25,8 +25,7 @@ go get github.com/jirevwe/go_partman
 
 Your Postgres tables must be created as a partitioned table before using go_partman. Examples:
 
-```sql
--- Single-tenant table
+<pre class="line-numbers"><code class="lang-sql">-- Single-tenant table
 CREATE TABLE events (
     id VARCHAR NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -42,12 +41,11 @@ CREATE TABLE events (
     data JSONB,
     PRIMARY KEY (id, created_at, project_id)
 ) PARTITION BY RANGE (project_id, created_at);
-```
+</code></pre>
 
 ### Sample code
 
-```go
-package main
+<pre class="line-numbers"><code class="lang-go">package main
 
 import (
 	"context"
@@ -204,6 +202,6 @@ func (r *RetentionPolicy) Start(ctx context.Context, sampleRate time.Duration) {
 func (r *RetentionPolicy) Perform(ctx context.Context) error {
 	return r.partitioner.Maintain(ctx)
 }
-```
+</code></pre>
 
 
