@@ -212,6 +212,10 @@ select * from sample;</code></pre>
 
 Using a partial index is the best way to ensure the unique constraint is held without making your table wider, managing an extra field, it consumes less space and isn’t (AS) error-prone when deleting the same record pair over and over again! 
 
+## Update
+* Relevant HN Discussion: https://news.ycombinator.com/item?id=42645110
+* Oracle treats empty strings are NULL for some reason, welp!
+
 ## Conclusion
 While this might seem trivial to experienced engineers and invisible when you use an ORM; it's often overlooked and can lead to confusion if you don't know how it works. Another fun thing I discovered is that the SQL standard document (think HTTP RFC but for SQL) isn't publicly available, but can be procured for a fee.
 * https://news.ycombinator.com/item?id=35567708

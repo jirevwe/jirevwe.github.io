@@ -122,6 +122,9 @@ Although a little slower to generate, **ULIDs** provide many pros over the pure 
 
 With the release of [UUIDv7](https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-01.html#name-uuidv7-layout-and-bit-order) that offers some benefits as ULIDs and are native to Postgres as of December 2024 (see the [commit here](https://github.com/postgres/postgres/commit/78c5e141e9c139fc2ff36a220334e4aa25e1b0eb#diff-229a1fe1ecaae95e35dcb9270c20c6d0bf37f33fbf019dfbd7f9ef014b07c0e3)), it might be better to switch to UUIDv7 in the future if one doesn't care about URL friendliness.  
 
+## Updates
+* Relevant HN Discussion: https://news.ycombinator.com/item?id=42533557
+
 ## References
 - [ULID Primary Keys](https://blog.daveallie.com/ulid-primary-keys)
 - [Using ULIDs at incident.io](https://blog.lawrencejones.dev/ulid)
