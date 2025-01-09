@@ -6,12 +6,12 @@ tags:
   - tech
   - interactive
 ---
-Yes, you read it right, SQL does treat all NULL values differently. I learnt this a while back while working on [Convoy](https://getconvoy.io/) and again on [LiteQueue](https:/github.com/jirevwe/litequeue): a Golang a queueing library. 
+Yes, you read that right. SQL does treat all NULL values differently. I learnt this a while back while working on [Convoy](https://getconvoy.io/) and again on [LiteQueue](https:/github.com/jirevwe/litequeue): a Golang a queueing library. 
 
-Basically, a column with a UNIQUE constraint can have multiple NULL values, because each NULL value is an actual value that is different from another NULL, this isn't readily obvious if you're used to using an ORM. The SQL based databases I tested SQLite, Postgres and MySQL all behave like this, and I'll prove it with some examples!
+Basically, any column with a UNIQUE constraint can have multiple NULL values, because each NULL value is a distinct value that is different from other NULLs, and this is even less obvious if you're used to using ORMs. I tested this with SQLite, Postgres and MYSQL and they all behave like this. Let's prove this with some examples
 
 ## Establishing a baseline
-First, let's establish a baseline how this can be confusing. We'd compare different values to see how they can be compared using the logical equals ("=") operator:
+First, let’s establish a baseline to further highlight how this can be confusing. We’ll be comparing different values using the logical equals ("=") operator and, even with basic programming experience, the results might not be what you expect:
 
 <pre><code class="lang-sql">select '' = '';    -- Returns 1 (true) because empty strings are equal
 select 1 = 1;      -- Returns 1 (true) because the numbers are equal
@@ -19,7 +19,7 @@ select 1 = 0;      -- Returns 0 (false) because the numbers are different
 select null = null; -- Returns NULL (null) because... wait what?</code></pre>
 <codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet>
 
-`select null = null;` returns NULL, because each NULL is basically a placeholder representing an "unknown value". Two unknown values are not necessarily the same value; we can't say that they are equal, because we don't know the value of either of them. So it evaluates to an "unknown value" that's obviously not "true" or "false", which is why `NULL = NULL` returns `NULL`. Very weird, ikr! So now we've established that two NULL values in the same column are not considered equal using "="; but we can use `IS`, because the `IS` operator checks for identity or rather if the type of both values are, well, NULL.
+`select null = null;` returns NULL, because each NULL is basically a placeholder representing any ["unknown value"](https://www.youtube.com/watch?v=cBw0c-cmOfc&t=13s). Two unknown values are not necessarily the same value; we can't say that they are equal, because we don't know the value of either of them. So it evaluates to an "unknown value" that's obviously not "true" or "false", which is why `NULL = NULL` returns `NULL`. Very weird, ikr! So now we've established that two NULL values in the same column are not considered equal using "="; but we can use `IS`, because the `IS` operator checks for identity or rather if the type of both values are, well, NULL.
 
 <pre><code class="lang-sql">select null is null; -- Returns 1 (true) because IS checks for NULL identity</code></pre>
 <codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet>
@@ -29,20 +29,17 @@ I'll demonstrate this using one more example, which shows that NULL values are n
 <pre><code class="lang-sql">drop table if exists sample;
 CREATE TABLE if not exists sample (
      id INTEGER PRIMARY KEY, -- auto-increment
-     value TEXT
+     name TEXT -- UNIQUE -- uncomment this line
 );
 
-INSERT INTO sample (value) VALUES (NULL);
-INSERT INTO sample (value) VALUES (NULL);
-INSERT INTO sample (value) VALUES ("test");
-INSERT INTO sample (value) VALUES ("test");
+INSERT INTO sample (name) VALUES (NULL), (NULL), ('test'); --, ('test');
 
 SELECT
     a.id as id1,
     b.id as id2,
-    coalesce(a.value, 'null') || ', ' || coalesce(b.value, 'null') as vals,
-    a.value = b.value as equal_comparison,
-    a.value IS b.value as is_comparison
+    coalesce(a.name, 'null') || ', ' || coalesce(b.name, 'null') as names,
+    a.name = b.name as equal_comparison,
+    a.name IS b.name as is_comparison
 FROM sample a
     CROSS JOIN sample b -- creates an n by m loop on all the table's records.
 WHERE a.id < b.id;</code></pre>
@@ -50,7 +47,7 @@ WHERE a.id < b.id;</code></pre>
 
 ## What about Uniqueness?
 
-Well, they'll break based on "normal" reasoning so if you just pair two columns and expect it to work, I have bad news for you :D. First we create our schema we'll use to test throughout this post and confirm that our table actually has the constraint.
+Well, they'll break based on "normal" reasoning so if you just pair two columns and expect it to work, I have bad news for you :D. First we create our schema we'll use to test throughout this post and confirm that our table actually has the `UNIQUE` constraint.
 
 <pre><code class="lang-sql">drop table if exists sample;
 create table if not exists sample (
@@ -89,15 +86,18 @@ If you ran the snippets you can see that both rows were actually inserted into t
 3. How then can we ensure uniqueness?
 
 ## Why does this happen?
-The two rows are actually unique, the first row `('ray@mail.com', NULL)` and the second row `('ray@mail.com', NULL)` are different because the NULL values as we saw above are different.
+Well, the two rows are actually unique! The first row `('ray@mail.com', NULL)` and the second row `('ray@mail.com', NULL)` are not the same because the NULL values, as we established earlier, are different.
 
 ## Why are NULLs handled this way?
-According to the [SQLite docs](https://www.sqlite.org/nulls.html), SQLite (and other SQL compliant databases) was implemented like this so that it handles NULLs in line with the SQL standards specification ——if only we could read (or refer) it, I'll comment on this at the end. The `UNIQUE(email, deleted_at)` constraint ensures no two rows have the same combination of email and deleted_at, but it allows multiple rows with the same email as long as deleted_at differs.
+According to the [SQLite docs](https://www.sqlite.org/nulls.html), SQLite, and other SQL compliant databases were implemented like this to handle NULLs in line with how other databases implement NULLs. Apparently none of them follow the SQL standards specification ——if only we could read (or refer) it, I'll comment on this at the end. Here's a quote from the [SQLite docs](https://www.sqlite.org/nulls.html):
+> The fact that NULLs are distinct for UNIQUE columns but are indistinct for SELECT DISTINCT and UNION continues to be puzzling. It seems that NULLs should be either distinct everywhere or nowhere. And the SQL standards documents suggest that NULLs should be distinct everywhere. Yet as of this writing, no SQL engine tested treats NULLs as distinct in a SELECT DISTINCT statement or in a UNION.
+
+The `UNIQUE(email, deleted_at)` constraint ensures no two rows have the same combination of email and deleted_at, but it allows multiple rows with the same email as long as `deleted_at` differs.
 
 ## How then can we ensure uniqueness?
 We'll explore two ways to mitigate this.
 
-### Using a generate column
+### Using a generated column
 
 To mitigate against the issue of NULLs not being a deterministic value we can create another field that always has a deterministic value. It will be a generated column that's set ON INSERT and ON UPDATE. We can define that field thus:
 <pre><code class="lang-sql">CREATE TABLE sample (
@@ -144,7 +144,7 @@ insert into sample (id, email, deleted_at) values ('8', 'different@mail.com', nu
 select * from sample;</code></pre>
 <codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet>
 
-While this works, there's a flaw, deleting the same record twice (basically when the tuple exists already) won't work. Let's test this.
+While this works, there's a flaw. Deleting the same record twice (basically when the tuple exists already) won't work. Let's test this.
 
 <pre><code class="lang-sql">drop table if exists sample;
 CREATE TABLE sample (
@@ -210,9 +210,9 @@ insert into sample (id, email, deleted_at) values ('8', 'different@mail.com', nu
 select * from sample;</code></pre>
 <codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet>
 
-Using a partial index is the best way to ensure the unique constraint is held without making your table wider, managing an extra field, it consumes less space and isn't error-prone when deleting the same record pair over and over again! 
+Using a partial index is the best way to ensure the unique constraint is held without making your table wider, managing an extra field, it consumes less space and isn’t (AS) error-prone when deleting the same record pair over and over again! 
 
 ## Conclusion
-While this might seem trivial to experienced engineers and invisible when you use an ORM, it's often overlooked and can lead to confusion if you don't know how it works.  Another fun thing I discovered is that the SQL standard document (think HTTP RFC but for SQL) isn't publicly available, but can be procured for a fee
+While this might seem trivial to experienced engineers and invisible when you use an ORM; it's often overlooked and can lead to confusion if you don't know how it works. Another fun thing I discovered is that the SQL standard document (think HTTP RFC but for SQL) isn't publicly available, but can be procured for a fee.
 * https://news.ycombinator.com/item?id=35567708
 * https://stackoverflow.com/questions/21813895/where-can-i-find-sql-language-specification
