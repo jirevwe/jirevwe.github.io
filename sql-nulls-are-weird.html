@@ -14,10 +14,10 @@
 <meta property="og:description" content="Yes, you read that right. SQL does treat all NULL values differently. I learnt this a while back while working on Convoy and again on LiteQueue: a Golang a queueing library.  Basically, any column wit">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-01-05T11:54:41.000Z">
-<meta property="article:modified_time" content="2025-01-09T09:08:37.624Z">
+<meta property="article:modified_time" content="2025-01-09T09:09:45.927Z">
 <meta property="article:author" content="Raymond Tukpe">
-<meta property="article:tag" content="til">
 <meta property="article:tag" content="tech">
+<meta property="article:tag" content="til">
 <meta property="article:tag" content="interactive">
 <meta name="twitter:card" content="summary">
     
@@ -194,7 +194,7 @@
 
   <div class="content" itemprop="articleBody">
     <p>Yes, you read that right. SQL does treat all NULL values differently. I learnt this a while back while working on <a target="_blank" rel="noopener" href="https://getconvoy.io/">Convoy</a> and again on <a target="_blank" rel="noopener" href="https://github.com/jirevwe/litequeue">LiteQueue</a>: a Golang a queueing library. </p>
-<p>Basically, any column with a UNIQUE constraint…because each NULL value is a distinct value that is different from other NULLs, and this is even less obvious if you’re used to using ORMs. I tested this with SQLite, Postgres and MYSQL and they all behave like this. Let’s prove this with some examples</p>
+<p>Basically, any column with a UNIQUE constraint can have multiple NULL values, because each NULL value is a distinct value that is different from other NULLs, and this is even less obvious if you’re used to using ORMs. I tested this with SQLite, Postgres and MYSQL and they all behave like this. Let’s prove this with some examples</p>
 <h2 id="Establishing-a-baseline"><a href="#Establishing-a-baseline" class="headerlink" title="Establishing a baseline"></a>Establishing a baseline</h2><p>First, let’s establish a baseline to further highlight how this can be confusing. We’ll be comparing different values using the logical equals (“=”) operator and, even with basic programming experience, the results might not be what you expect:</p>
 <pre><code class="lang-sql">select '' = '';    -- Returns 1 (true) because empty strings are equal
 select 1 = 1;      -- Returns 1 (true) because the numbers are equal
