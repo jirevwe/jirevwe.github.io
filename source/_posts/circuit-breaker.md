@@ -27,13 +27,12 @@ In the above, we retrieve the `circuit` used to manage calls to the `Stripe API`
 - It tracks the success/failure of past calls
 - It decides whether the current call should go through.
 
-The state of the circuit breaker is local to each process, so if you have ten processes, each must come to this realization independently (this is by design). The libraries below evaluate and manage circuit breakers this way.
+The state of the circuit breaker is local to each process, so if you have ten processes, each must come to this realization independently (this is by design). The libraries below evaluate and manage circuit breakers this way:
 * [streadway/breaker](https://github.com/streadway/handy/blob/master/breaker/breaker.go)
 * [sony/gobreaker](https://github.com/sony/gobreaker)
 * [afex/hystrix-go](https://github.com/afex/hystrix-go)
 
 You can read more about circuit breakers [here](https://learn.microsoft.com/en-us/previous-versions/msp-n-p/dn589784(v=pandp.10)?redirectedfrom=MSDN) and [here](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/circuit-breaker.html).
-
 
 ## Synchronous vs. Asynchronous circuit breakers
 
@@ -76,7 +75,7 @@ Convoy’s agent is responsible for ingesting, queueing, and dispatching webhook
 1. Design a circuit breaker that can disable webhook delivery to an endpoint across all agents.
 2. Design the system without introducing another dependency for leader election.
 
-The first requirement is the most important requirement to the design of an asynchronous circuit breaker. We need a mechanism to enable the system to conclude that the webhook endpoint has failed and should be disabled so that any agent attempting to send a webhook to that endpoint doesn’t. The second requirement is a temporary self imposed limitation [1].
+The first requirement is the most important requirement to the design of an asynchronous circuit breaker. We need a mechanism to enable the system to conclude that the webhook endpoint has failed and should be disabled so that any agent attempting to send a webhook to that endpoint doesn’t. The second requirement is a self-imposed limitation [1] that forced us to not over-engineer the chosen solution.
 
 An important distinction between a synchronous and asynchronous circuit breaker is that the former is used to manage only a handful of endpoints; when the a circuit trips excessively, on-call engineers are paged to fix the issue, while the latter is used to manage more than a handful — in our scenario, webhook endpoints that can grow to thousands. Paging on-call engineers for each failure isn’t a feasible solution; the system needs to come to the conclusion by itself and notify the customer.
 
@@ -87,7 +86,7 @@ Before I get into our solution, let's explore some alternatives evaluated:
 ### Shared Metrics in Redis
 - All agents increment the number of requests and failures in Redis using atomic operations.
 
-### State Management in `etcd`
+### State Management in Etcd
 
 - Use `etcd` to store the circuit breaker state.
 - Implement leader election using `etcd`.
@@ -139,8 +138,7 @@ Before I get into our solution, let's explore some alternatives evaluated:
 - Row-level database triggers significantly affect query performance by about 3x. [4]
 
 ## Our Solution: Use Redis and Postgres Database Polling + leader election using RedLock
-
-This was inspired by AWS’s Do Constant Work [6] philosophy.
+This was inspired by AWS’s Do Constant Work [6] philosophy. We chose this approach because it is deterministic and easy to grok. Polling will take a toll on the db for sure, but with relatively good indexes and a reasonable poll interval the db hit won't be noticeable.
 
 ### PostgreSQL
 
@@ -149,7 +147,7 @@ This was inspired by AWS’s Do Constant Work [6] philosophy.
 ### Redis
 
 - We use a distributed lock on Redis to select the leader node [1].
-- The leader loads the circuit breaker state, updates it based on the success and failure rates from the db poll result, and stores the new state in Redis.
+- The leader loads the circuit breaker state; if it exists it will update it based on the success and failure rates from the db poll result, if not it will create a new one, and then it will store the new states in Redis.
 - All agents load the circuit breaker state from Redis into memory when making decisions.
 
 ### Workflow
@@ -164,8 +162,9 @@ This was inspired by AWS’s Do Constant Work [6] philosophy.
     - Each agent fetches the circuit breaker state from Redis before sending an event.
 
 ## Implementation
+The code for the package is [here](https://github.com/frain-dev/convoy/tree/main/pkg/circuit_breaker) if you want to browse the whole thing. Now we can go into details about the part of the package.
 
-### Circuit Breaker Representation
+### Circuit Breaker
 A circuit breaker represents an upstream endpoint or a 3rd party service.
 
 <pre class="line-numbers"><code class="lang-go">// State represents a state of a CircuitBreaker.
@@ -205,7 +204,7 @@ type CircuitBreaker struct {
 }
 </code></pre>
 
-### Circuit Breaker Manager Representation
+### Circuit Breaker Manager
 We use a CircuitBreakerManager to manage all the circuit breakers. It comes bundled with a `Store`, `Configuration`, and `Clock`.
 
 <pre class="line-numbers"><code class="lang-go">type CircuitBreakerManager struct {
@@ -479,19 +478,21 @@ The `CircuitBreakerManager` exposes methods to
 ## Benefits in production?
 We began testing this in production and found some pretty interesting graph. One of our self-hosted customers was averaging about 100k failed delivery attempts/day (~10% of their traffic; they send about 600k events/day) due to zombie endpoints. Now it’s down to about 5k per day. That’s a 95% improvement. It turns out the ideal metric of success is the % of failed delivery attempts should be less than a number depending on the scale of deployment.
 
-![Event Performance Graph](/images/circuit-breaker-graph.png)
+![Event Performance Graph After One Week](/images/circuit-breaker-graph.png)
+
+After a few months of integrating the circuit breaker the instance spends less time sending webhooks to bad endpoints, which is an overall improvement since more compute is spent sending webhooks to functioning endpoints.
+
+![Event Performance Graph After A Few Months](/images/circuit-breaker-graph-months.png)
 
 ## Failure Scenarios
 Applying Murphy’s law [5] to our design; some possible production failure scenarios include:
 1. **The leader agent goes down during state evaluation:** The state evaluation process is an atomic operation (we use a Redis pipeline for writes); it either all works or nothing works. At the next sample cycle, a new leader will be elected and will carry out state evaluation.
 2. **All circuit keys are flushed from Redis.** The following sample cycle will generate the `error_rate` again and rebuild the circuit's state; eventually, zombie endpoints will be disabled again.
 3. **Redis is down:** We have timeouts to ensure that clients are not hung up on Redis and the circuit “fails-open” as if it wasn’t there in the first place.
-
-In conclusion, we’re excited to introduce this feature in beta into the core gateway. Please test and tune the circuit and share your feedback!
+Other failure scenarios exist but these are the top of mind ones.
 
 ## Appendix
-
-1. In the future, we plan to implement a proper leader-election algorithm, but for now, a distributed lock can suffice.
+1. In the future, we plan to implement a proper leader-election algorithm, but for now, a distributed lock suffices.
 2. This summarizes the difference between a synchronous circuit breaker and an asynchronous breaker.
    | Feature | Synchronous Circuit Breakers | Asynchronous Circuit Breakers |
    | --- | --- | --- |
