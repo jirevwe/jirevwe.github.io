@@ -14,8 +14,8 @@ Basically, any column with a UNIQUE constraint can have multiple NULL values, be
 First, let’s establish a baseline to further highlight how this can be confusing. We’ll be comparing different values using the logical equals ("=") operator and, even with basic programming experience, the results might not be what you expect:
 
 <pre><code class="lang-sql">select '' = '';    -- Returns 1 (true) because empty strings are equal
-select 1 = 1;      -- Returns 1 (true) because the numbers are equal
-select 1 = 0;      -- Returns 0 (false) because the numbers are different
+select 1 = 1;       -- Returns 1 (true) because the numbers are equal
+select 1 = 0;       -- Returns 0 (false) because the numbers are different
 select null = null; -- Returns NULL (null) because... wait what?</code></pre>
 <codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet>
 
@@ -212,14 +212,38 @@ select * from sample;</code></pre>
 
 Using a partial index is the best way to ensure the unique constraint is held without making your table wider, managing an extra field, it consumes less space and isn’t (AS) error-prone when deleting the same record pair over and over again! 
 
-## Update
+## IS [NOT] DISTINCT FROM
+Modern database engines allow you to specify if you want to NULLs to be distinct. This gives you another way to compare if two null values are the same.
+<pre><code class="lang-sql">select null IS DISTINCT FROM null, null IS NOT DISTINCT FROM null;
+</code></pre>
+<codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet>
+
+## Updates
 * [Oracle treats empty strings as NULL for some reason](https://stackoverflow.com/a/13278879), welp!
-* Modern database engines allow you to specify if you want to NULLs to be distinct. [//]: todo: edit article to show this behaviour
-    * https://news.ycombinator.com/item?id=42651648
-* Relevant HN discussion: https://news.ycombinator.com/item?id=42645110
-* Relevant discussion on Reddit r/programming: https://www.reddit.com/r/programming/comments/1hxi1tg/sql_nulls_are_weird/
+* Relevant [HN discussion](https://news.ycombinator.com/item?id=42645110).
+* Relevant discussion on [r/programming](https://www.reddit.com/r/programming/comments/1hxi1tg/sql_nulls_are_weird/).
 
 ## Conclusion
+To recap:
+<pre><code class="lang-sql">select 1 = 1,  -- Returns 1 (true)
+       1 = 0,  -- Returns 0 (false)
+       1 = null, -- Returns 1 (null)
+       null = null; -- Returns 1 (null)
+
+select 1 IS NULL, -- Returns 0 (false)
+       null IS NULL; -- Returns 1 (true)
+
+select 1 IS NOT DISTINCT FROM 1, -- Returns 1 (true)
+       1 IS NOT DISTINCT FROM 0, -- Returns 0 (false)
+       1 IS NOT DISTINCT FROM null,  -- Returns 0 (false)
+       null IS NOT DISTINCT FROM null;  -- Returns 1 (true)</code></pre>
+<codapi-snippet engine="wasi" sandbox="sqlite" editor="basic"></codapi-snippet>
+
 While this might seem trivial to experienced engineers and invisible when you use an ORM; it's often overlooked and can lead to confusion if you don't know how it works. Another fun thing I discovered is that the SQL standard document (think HTTP RFC but for SQL) isn't publicly available, but can be procured for a fee.
 * https://news.ycombinator.com/item?id=35567708
 * https://stackoverflow.com/questions/21813895/where-can-i-find-sql-language-specification
+
+## References
+* [IS DISTINCT FROM (null-safe not equals comparison)](https://modern-sql.com/feature/is-distinct-from)
+* [The Three-Valued Logic of SQL](https://modern-sql.com/concept/three-valued-logic)
+* https://stackoverflow.com/questions/58997907/is-there-a-difference-between-is-null-and-is-not-distinct-from-null/58998043#58998043
