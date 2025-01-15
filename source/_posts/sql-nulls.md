@@ -227,8 +227,8 @@ Modern database engines allow you to specify if you want to NULLs to be distinct
 To recap:
 <pre><code class="lang-sql">select 1 = 1,  -- Returns 1 (true)
        1 = 0,  -- Returns 0 (false)
-       1 = null, -- Returns 1 (null)
-       null = null; -- Returns 1 (null)
+       1 = null, -- Returns unknown (null)
+       null = null; -- Returns unknown (null)
 
 select 1 IS NULL, -- Returns 0 (false)
        null IS NULL; -- Returns 1 (true)

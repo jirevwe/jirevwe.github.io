@@ -1,5 +1,5 @@
 ---
-title: "Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"
+title: "Designing A Circuit Breaker For Disabling Webhook Endpoints"
 date: 2024-12-10 16:16:02
 description: 'One of the major problems of designing a webhook delivery system is designing around bad/zombie endpoints. Zombie endpoints are dead endpoints that fail continuously and, over time, clog up your queues, create back pressure, and delay event delivery to legitimate webhook endpoints.'
 tags:
