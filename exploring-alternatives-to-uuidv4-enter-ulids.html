@@ -14,10 +14,10 @@
 <meta property="og:description" content="UUIDv4 and ULID are both types of unique identifiers that can be used in distributed systems. UUIDv4 stands for Universally Unique Identifier version 4, and ULID stands for Universally Unique Lexicogr">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-11-28T13:05:40.000Z">
-<meta property="article:modified_time" content="2025-01-09T20:57:00.151Z">
+<meta property="article:modified_time" content="2025-01-15T16:23:06.589Z">
 <meta property="article:author" content="Raymond Tukpe">
-<meta property="article:tag" content="tech">
 <meta property="article:tag" content="convoy">
+<meta property="article:tag" content="tech">
 <meta property="article:tag" content="uuid">
 <meta name="twitter:card" content="summary">
     
@@ -130,7 +130,7 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="Previous post" href="/no-hit.html"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Previous post" href="/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" aria-label="Next post" href="/setting-up-your-own-vpn-using-wireguard.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -332,7 +332,7 @@ SELECT generate_ulid(now()) FROM generate_series(1, 1000000);
 </ol>
 <h2 id="What-did-this-mean-for-our-user’s-data"><a href="#What-did-this-mean-for-our-user’s-data" class="headerlink" title="What did this mean for our user’s data?"></a>What did this mean for our user’s data?</h2><p>At Convoy, we strive to make sure that our software is backwards compatible and that little effort is required on our user’s part, so your workloads can operate while we move things around internally. We ensure that the contract we keep with our API is never broken. In this case, we unfortunately had to make the change, so we as a company and Convoy as a product could evolve into a version of the vision that we have.</p>
 <h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Although a little slower to generate, <strong>ULIDs</strong> provide many pros over the pure random <strong>UUIDv4</strong> that lots of large companies running work-loads at scale have adopted. As a company building for the scale of our current users and future scale of the general internet, we are always looking to adopt and implement technologies that will work at companies of all sizes, sending and ingesting any number of webhook events.</p>
-<p>With the release of <a target="_blank" rel="noopener" href="https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-01.html#name-uuidv7-layout-and-bit-order">UUIDv7</a> that offers some benefits as ULIDs and are native to Postgres as of December 2024 (see the <a target="_blank" rel="noopener" href="https://github.com/postgres/postgres/commit/78c5e141e9c139fc2ff36a220334e4aa25e1b0eb#diff-229a1fe1ecaae95e35dcb9270c20c6d0bf37f33fbf019dfbd7f9ef014b07c0e3">commit here</a>), it might be better to switch to UUIDv7 in the future if one doesn’t care about URL friendliness.  </p>
+<p>UUIDv7 support was supposed to be included in Postgres 17, but the RFC <a target="_blank" rel="noopener" href="https://www.postgresql.org/message-id/flat/ZhzFQxU0t0xk9mA_%40paquier.xyz#bbf76f7ce0122496b747baf9d657f5c8">wasn’t finalized in time</a>. With the release of <a target="_blank" rel="noopener" href="https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-01.html#name-uuidv7-layout-and-bit-order">UUIDv7</a> that offers some benefits as ULIDs and are native to Postgres as of December 2024 (see the <a target="_blank" rel="noopener" href="https://github.com/postgres/postgres/commit/78c5e141e9c139fc2ff36a220334e4aa25e1b0eb#diff-229a1fe1ecaae95e35dcb9270c20c6d0bf37f33fbf019dfbd7f9ef014b07c0e3">commit here</a>), it might be better to switch to UUIDv7 in the future if one doesn’t care about URL friendliness.</p>
 <h2 id="Updates"><a href="#Updates" class="headerlink" title="Updates"></a>Updates</h2><ul>
 <li>Relevant HN Discussion: <a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=42533557">https://news.ycombinator.com/item?id=42533557</a></li>
 </ul>

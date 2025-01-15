@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="One of the major problems of designing a webhook delivery system is designing around bad&#x2F;zombie endpoints. Zombie endpoints are dead endpoints that fail continuously and, over time, clog up your queue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints">
+<meta property="og:url" content="https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html">
+<meta property="og:site_name" content="Raymond Tukpe">
+<meta property="og:description" content="One of the major problems of designing a webhook delivery system is designing around bad&#x2F;zombie endpoints. Zombie endpoints are dead endpoints that fail continuously and, over time, clog up your queue">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raymondtukpe.com/images/convoy-architecture-diagram.png">
+<meta property="og:image" content="https://raymondtukpe.com/images/circuit-breaker-graph.png">
+<meta property="article:published_time" content="2024-12-10T15:16:02.000Z">
+<meta property="article:modified_time" content="2025-01-15T16:37:12.475Z">
+<meta property="article:author" content="Raymond Tukpe">
+<meta property="article:tag" content="convoy">
+<meta property="article:tag" content="tech">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raymondtukpe.com/images/convoy-architecture-diagram.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- custom styles -->
+    
+<link rel="stylesheet" href="/css/custom.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Raymond Tukpe" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+    <!-- codapi css -->
+    <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
+
+    <!-- codapi sqlite   -->
+    <script src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
+
+    <!-- codapi  -->
+    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
+
+    <!-- code highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeBlocks = document.querySelectorAll('code[contenteditable="true"]');
+
+            codeBlocks.forEach(block => {
+                // Handle blur event (clicking out of the block)
+                block.addEventListener('blur', () => {
+                    block.innerHTML = block.textContent;
+                    Prism.highlightElement(block);
+                });
+
+                // Handle tab key
+                block.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        document.execCommand('insertText', false, '    ');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- posthog analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2===o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init('phc_MYiNjUsyl0OMMdquL3Q4DD99ZtLlgWToY0njcgrHBPB', {
+            api_host:'https://us.i.posthog.com',
+            person_profiles: 'always' // or 'always' to create profiles for anonymous users as well
+        })
+        posthog.capture('loaded', { property: document.location.userAgent });
+    </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/no-hit.html"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&text=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&is_video=false&description=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints&body=Check out this article: https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&name=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&t=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Synchronous-vs-Asynchronous-circuit-breakers"><span class="toc-number">1.</span> <span class="toc-text">Synchronous vs. Asynchronous circuit breakers</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Synchronous-Circuit-Breakers"><span class="toc-number">1.1.</span> <span class="toc-text">Synchronous Circuit Breakers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Asynchronous-Circuit-Breakers"><span class="toc-number">1.2.</span> <span class="toc-text">Asynchronous Circuit Breakers</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Our-Circuit-Breaker-Requirements"><span class="toc-number">2.</span> <span class="toc-text">Our Circuit Breaker Requirements</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Core-Requirements"><span class="toc-number">2.1.</span> <span class="toc-text">Core Requirements</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution-1-Using-Redis-and-Etcd"><span class="toc-number">3.</span> <span class="toc-text">Solution #1: Using Redis and Etcd</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Shared-Metrics-in-Redis"><span class="toc-number">3.1.</span> <span class="toc-text">Shared Metrics in Redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#State-Management-in-etcd"><span class="toc-number">3.2.</span> <span class="toc-text">State Management in etcd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Workflow"><span class="toc-number">3.3.</span> <span class="toc-text">Workflow:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pros"><span class="toc-number">3.4.</span> <span class="toc-text">Pros</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cons"><span class="toc-number">3.5.</span> <span class="toc-text">Cons</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution-2-Using-Redis-and-PostgreSQL-LISTEN-NOTIFY-leader-election-using-RedLock"><span class="toc-number">4.</span> <span class="toc-text">Solution #2: Using Redis and PostgreSQL: LISTEN&#x2F;NOTIFY + leader election using RedLock</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PostgreSQL-triggers-the-event"><span class="toc-number">4.1.</span> <span class="toc-text">PostgreSQL triggers the event</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#State-management-in-Redis"><span class="toc-number">4.2.</span> <span class="toc-text">State management in Redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Workflow-1"><span class="toc-number">4.3.</span> <span class="toc-text">Workflow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pros-1"><span class="toc-number">4.4.</span> <span class="toc-text">Pros</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cons-1"><span class="toc-number">4.5.</span> <span class="toc-text">Cons</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Our-Solution-Use-Redis-and-Postgres-Database-Polling-leader-election-using-RedLock"><span class="toc-number">5.</span> <span class="toc-text">Our Solution: Use Redis and Postgres Database Polling + leader election using RedLock</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PostgreSQL"><span class="toc-number">5.1.</span> <span class="toc-text">PostgreSQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis"><span class="toc-number">5.2.</span> <span class="toc-text">Redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Workflow-2"><span class="toc-number">5.3.</span> <span class="toc-text">Workflow</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Implementation"><span class="toc-number">6.</span> <span class="toc-text">Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Circuit-Breaker-Representation"><span class="toc-number">6.1.</span> <span class="toc-text">Circuit Breaker Representation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Circuit-Breaker-Manager-Representation"><span class="toc-number">6.2.</span> <span class="toc-text">Circuit Breaker Manager Representation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Configuring-the-CircuitBreakerManager"><span class="toc-number">6.3.</span> <span class="toc-text">Configuring the CircuitBreakerManager</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Store"><span class="toc-number">6.4.</span> <span class="toc-text">Store</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Clock"><span class="toc-number">6.5.</span> <span class="toc-text">Clock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Initializing-the-CircuitBreakerManager"><span class="toc-number">6.6.</span> <span class="toc-text">Initializing the CircuitBreakerManager</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Check-if-an-operation-should-be-allowed"><span class="toc-number">6.6.1.</span> <span class="toc-text">Check if an operation should be allowed</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Acquire-and-release-the-distributed-lock"><span class="toc-number">6.6.2.</span> <span class="toc-text">Acquire and release the distributed lock.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Sample-the-database-update-the-circuit-breaker-state-and-write-back-to-Redis"><span class="toc-number">6.6.3.</span> <span class="toc-text">Sample the database, update the circuit breaker state, and write back to Redis.</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Benefits-in-production"><span class="toc-number">7.</span> <span class="toc-text">Benefits in production?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Failure-Scenarios"><span class="toc-number">8.</span> <span class="toc-text">Failure Scenarios</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Appendix"><span class="toc-number">9.</span> <span class="toc-text">Appendix</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Raymond Tukpe</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-12-10T15:16:02.000Z" itemprop="datePublished">2024-12-10</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/convoy/" rel="tag">convoy</a>, <a class="tag-link-link" href="/tags/tech/" rel="tag">tech</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <blockquote>
+<p>This post was originally posted on <a target="_blank" rel="noopener" href="https://getconvoy.io/blog/circuit-breaker-in-golang">Convoy’s blog</a>.</p>
+</blockquote>
+<p>One of the major problems that arose when designing <a target="_blank" rel="noopener" href="https://getconvoy.io/">Convoy</a>, a webhook delivery system is figuring out what to do when you have bad/zombie endpoints. Zombie endpoints are endpoints that fail continuously and, over time, clog up your queues, create back pressure, and delay webhook delivery to functioning endpoints. Circuit breakers are the best-known mechanism for dealing with unreliable HTTP API endpoints, preventing failures from upstream services from cascading into our system.</p>
+<p>In this article, we describe the design of a stateful distributed circuit breaker used to handle zombie endpoints in Convoy. But before we dive into its design, let’s look at a quick refresher on the circuit breaker API and how it works. Let’s consider a circuit breaker used when calling Stripe’s APIs.</p>
+<pre class="line-numbers"><code class="lang-go">circuit := manager.GetCircuit("stripe")
+err := circuit.Run(ctx, func(ctx context.Context) error &#123;
+   // ...
+   // charge card or any other Stripe action.
+   // ...
+   return err
+&#125;
+</code></pre>
+
+<p>In the above, we retrieve the <code>circuit</code> used to manage calls to the <code>Stripe API</code> and wrap the current call to the <code>API</code> with the <code>circuit.Run()</code> method. The circuit breaker does two things:</p>
+<ul>
+<li>It tracks the success/failure of past calls</li>
+<li>It decides whether the current call should go through.</li>
+</ul>
+<p>The state of the circuit breaker is local to each process, so if you have ten processes, each must come to this realization independently (this is by design). The libraries below evaluate and manage circuit breakers this way.</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/streadway/handy/blob/master/breaker/breaker.go">streadway/breaker</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/sony/gobreaker">sony/gobreaker</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/afex/hystrix-go">afex/hystrix-go</a></li>
+</ul>
+<p>You can read more about circuit breakers <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/previous-versions/msp-n-p/dn589784(v=pandp.10)?redirectedfrom=MSDN">here</a> and <a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/circuit-breaker.html">here</a>.</p>
+<h2 id="Synchronous-vs-Asynchronous-circuit-breakers"><a href="#Synchronous-vs-Asynchronous-circuit-breakers" class="headerlink" title="Synchronous vs. Asynchronous circuit breakers"></a>Synchronous vs. Asynchronous circuit breakers</h2><h3 id="Synchronous-Circuit-Breakers"><a href="#Synchronous-Circuit-Breakers" class="headerlink" title="Synchronous Circuit Breakers"></a>Synchronous Circuit Breakers</h3><p>Synchronous circuit breakers operate in a blocking manner when performing health checks. When evaluating the next state for a circuit breaker, all subsequent calls for the circuit breaker will be blocked until it is complete. This is a straightforward approach, but it can lead to performance issues, as the calling services are forced to wait for the operation to complete before proceeding. This blocking behavior is commonly implemented with a mutex or a semaphore. The libraries mentioned above are examples of Synchronous circuit breakers.</p>
+<p>The main advantages of synchronous circuit breakers are:</p>
+<ol>
+<li><strong>Simplicity</strong>: Synchronous circuit breakers are relatively easy to implement and understand.</li>
+<li><strong>Visibility</strong>: The state of the circuit breaker is clearly visible, making it easier to monitor and troubleshoot.</li>
+</ol>
+<p>The disadvantages of synchronous circuit breakers include:</p>
+<ol>
+<li><strong>No Synchronization Across Replicas</strong>: Since each server runs its version of the circuit breaker, each server realizes the state of the third-party service or an upstream endpoint on its own without a means to let the other servers know about its findings. If a decision needs to be made to switch to a fallback provider or disable an endpoint, a new replica that is spun up will still attempt to send requests to that failing third-party service.</li>
+<li><strong>Reduced Concurrency</strong>: Synchronous circuit breakers limit the system’s concurrency, as each request must wait for the circuit breaker state evaluation to complete before it can proceed.</li>
+</ol>
+<h3 id="Asynchronous-Circuit-Breakers"><a href="#Asynchronous-Circuit-Breakers" class="headerlink" title="Asynchronous Circuit Breakers"></a>Asynchronous Circuit Breakers</h3><p>Asynchronous circuit breakers, on the other hand, operate in a non-blocking manner. That is, state evaluation is decoupled from usage. This allows the system to maintain higher availability and concurrency, as calling services can process requests while the new state is being evaluated.</p>
+<p>The main advantages of asynchronous circuit breakers are:</p>
+<ol>
+<li><strong>Improved Availability</strong>: Asynchronous circuit breakers do not block the calling service, allowing the system to maintain a higher level of availability.</li>
+<li><strong>Increased Concurrency</strong>: Asynchronous circuit breakers can handle more concurrent requests, as the calling service is not blocked while the circuit breaker is tripped.</li>
+<li><strong>Synchronization Across Replicas</strong>: Each server replica is aware of the new state of the circuit breaker and uses that when making decisions. When decisions are made, all replicas receive the update. Also, while they don’t all get the update on time, the time lag isn’t as drawn out as it would be if it had to come to the same conclusion.</li>
+</ol>
+<p>The disadvantages of asynchronous circuit breakers include:</p>
+<ol>
+<li><strong>Increased Complexity</strong>: Asynchronous circuit breakers are generally more complex to implement and understand, requiring additional logic to handle the non-blocking behavior.</li>
+<li><strong>Reduced Visibility</strong>: The state of the circuit breaker may not be as easily visible as in the synchronous case, making it more challenging to monitor and troubleshoot.</li>
+</ol>
+<h2 id="Our-Circuit-Breaker-Requirements"><a href="#Our-Circuit-Breaker-Requirements" class="headerlink" title="Our Circuit Breaker Requirements"></a>Our Circuit Breaker Requirements</h2><p>Before we go into the details of a distributed circuit breaker, let’s refresh our knowledge of Convoy’s architecture.<br><img src="/images/convoy-architecture-diagram.png" alt="Convoy&#39;s architecture"><span class="image-caption">Convoy&#39;s architecture</span></p>
+<p>Convoy’s agent is responsible for ingesting, queueing, and dispatching webhook events; essentially, it is the hot path on which we must apply our circuit breakers. Now, we have sufficient background to dive into the details of the distributed breaker and how it differs from traditional circuit breakers.</p>
+<h3 id="Core-Requirements"><a href="#Core-Requirements" class="headerlink" title="Core Requirements"></a>Core Requirements</h3><ol>
+<li>Design a circuit breaker that can disable webhook delivery to an endpoint across all agents.</li>
+<li>Design the system without introducing another dependency for leader election.</li>
+</ol>
+<p>The first requirement is the most important requirement to the design of an asynchronous circuit breaker. We need a mechanism to enable the system to conclude that the webhook endpoint has failed and should be disabled so that any agent attempting to send a webhook to that endpoint doesn’t. The second requirement is a temporary self imposed limitation [1].</p>
+<p>An important distinction between a synchronous and asynchronous circuit breaker is that the former is used to manage only a handful of endpoints; when the a circuit trips excessively, on-call engineers are paged to fix the issue, while the latter is used to manage more than a handful — in our scenario, webhook endpoints that can grow to thousands. Paging on-call engineers for each failure isn’t a feasible solution; the system needs to come to the conclusion by itself and notify the customer.</p>
+<p>Before I get into our solution, let’s explore some alternatives evaluated:</p>
+<h2 id="Solution-1-Using-Redis-and-Etcd"><a href="#Solution-1-Using-Redis-and-Etcd" class="headerlink" title="Solution #1: Using Redis and Etcd"></a>Solution #1: Using Redis and Etcd</h2><h3 id="Shared-Metrics-in-Redis"><a href="#Shared-Metrics-in-Redis" class="headerlink" title="Shared Metrics in Redis"></a>Shared Metrics in Redis</h3><ul>
+<li>All agents increment the number of requests and failures in Redis using atomic operations.</li>
+</ul>
+<h3 id="State-Management-in-etcd"><a href="#State-Management-in-etcd" class="headerlink" title="State Management in etcd"></a>State Management in <code>etcd</code></h3><ul>
+<li>Use <code>etcd</code> to store the circuit breaker state.</li>
+<li>Implement leader election using <code>etcd</code>.</li>
+<li>Only the leader can update the circuit breaker state using the metrics from Redis, and the other agents (followers) can only read it.</li>
+</ul>
+<h3 id="Workflow"><a href="#Workflow" class="headerlink" title="Workflow:"></a>Workflow:</h3><ul>
+<li>When writing;<ul>
+<li>Agents send webook requests and update Redis with the result (success/failure).</li>
+<li>The leader agent periodically checks the metrics from Redis and determines if the circuit breaker should change state.</li>
+<li>If the state needs to change, the leader updates the state in <code>etcd</code>.</li>
+</ul>
+</li>
+<li>When reading;<ul>
+<li>Each agent reads the state from <code>etcd</code> before sending an event.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Pros"><a href="#Pros" class="headerlink" title="Pros"></a>Pros</h3><ul>
+<li>Metrics collection is decoupled from the decision-making process.</li>
+<li>We get industry-standard leader-election baked into the system automatically.</li>
+</ul>
+<h3 id="Cons"><a href="#Cons" class="headerlink" title="Cons"></a>Cons</h3><ul>
+<li>This would require us to add a new dependency, which would be a deal breaker as running in our cloud environment would cost more per customer, and our community members would have to learn how to host and run an <code>etcd</code> cluster.</li>
+</ul>
+<h2 id="Solution-2-Using-Redis-and-PostgreSQL-LISTEN-NOTIFY-leader-election-using-RedLock"><a href="#Solution-2-Using-Redis-and-PostgreSQL-LISTEN-NOTIFY-leader-election-using-RedLock" class="headerlink" title="Solution #2: Using Redis and PostgreSQL: LISTEN/NOTIFY + leader election using RedLock"></a>Solution #2: Using Redis and PostgreSQL: LISTEN/NOTIFY + leader election using RedLock</h2><h3 id="PostgreSQL-triggers-the-event"><a href="#PostgreSQL-triggers-the-event" class="headerlink" title="PostgreSQL triggers the event"></a>PostgreSQL triggers the event</h3><ul>
+<li>Whenever the status of an event delivery changes, an ON-UPDATE SQL event is triggered from the event deliveries table. The trigger runs a function that sends a notification message from Postgres to the app using <code>NOTIFY</code>.</li>
+</ul>
+<h3 id="State-management-in-Redis"><a href="#State-management-in-Redis" class="headerlink" title="State management in Redis"></a>State management in Redis</h3><ul>
+<li>The leader agent <code>LISTEN</code>(s) to the channel; when it receives a message, it updates the circuit breaker’s state based on the failure rate and stores the new state in Redis.</li>
+<li>A background job is run on the leader periodically to transition each breaker’s state from <code>open</code> to <code>half-open</code> when the timeout has elapsed.</li>
+</ul>
+<h3 id="Workflow-1"><a href="#Workflow-1" class="headerlink" title="Workflow"></a>Workflow</h3><ul>
+<li>When writing;<ul>
+<li>Each agent tries to acquire a distributed lock using Redlock; only one succeeds and holds it until it is done, while the other agents’ lock requests expire.</li>
+<li>Write the updated circuit breaker state to redis</li>
+<li>Release the distributed lock</li>
+</ul>
+</li>
+<li>When reading;<ul>
+<li>Each agent fetches the circuit breaker state from Redis before sending an event.</li>
+</ul>
+</li>
+</ul>
+<h3 id="Pros-1"><a href="#Pros-1" class="headerlink" title="Pros"></a>Pros</h3><ul>
+<li>Row-level database triggers are thread-safe since each trigger is executed in the same transaction context, and Go’s mutex locks will serialize the concurrent operation [3]</li>
+</ul>
+<h3 id="Cons-1"><a href="#Cons-1" class="headerlink" title="Cons"></a>Cons</h3><ul>
+<li>For every event delivery sent, the database trigger runs and generates a notification, which could lead to the listener doing a disproportionate amount of work when many events are sent in a short period.</li>
+<li>Metrics collection information can be lost if an error occurs in the listener’s handler or when the leader election event is happening since there is no leader at that point.</li>
+<li>Row-level database triggers significantly affect query performance by about 3x. [4]</li>
+</ul>
+<h2 id="Our-Solution-Use-Redis-and-Postgres-Database-Polling-leader-election-using-RedLock"><a href="#Our-Solution-Use-Redis-and-Postgres-Database-Polling-leader-election-using-RedLock" class="headerlink" title="Our Solution: Use Redis and Postgres Database Polling + leader election using RedLock"></a>Our Solution: Use Redis and Postgres Database Polling + leader election using RedLock</h2><p>This was inspired by AWS’s Do Constant Work [6] philosophy.</p>
+<h3 id="PostgreSQL"><a href="#PostgreSQL" class="headerlink" title="PostgreSQL"></a>PostgreSQL</h3><ul>
+<li>Samples a set of rows based on an observability window from an SQL table to calculate success and failure rates.</li>
+</ul>
+<h3 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h3><ul>
+<li>We use a distributed lock on Redis to select the leader node [1].</li>
+<li>The leader loads the circuit breaker state, updates it based on the success and failure rates from the db poll result, and stores the new state in Redis.</li>
+<li>All agents load the circuit breaker state from Redis into memory when making decisions.</li>
+</ul>
+<h3 id="Workflow-2"><a href="#Workflow-2" class="headerlink" title="Workflow"></a>Workflow</h3><ul>
+<li>When writing;<ul>
+<li>Each agent tries to acquire a distributed lock using Redlock; only one succeeds and holds it until it is done, while the other agents’ lock requests expire.</li>
+<li>Samples a set of rows based on an observability window from an SQL table to calculate success and failure rates.</li>
+<li>Load the circuit breaker state and update it based on the success and failure rates or the timeout expired (for <code>open</code> circuit breakers).</li>
+<li>Store the new state in Redis.</li>
+<li>Release the lock.</li>
+<li>The whole process is run periodically based on a sample rate.</li>
+</ul>
+</li>
+<li>When reading;<ul>
+<li>Each agent fetches the circuit breaker state from Redis before sending an event.</li>
+</ul>
+</li>
+</ul>
+<h2 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h2><h3 id="Circuit-Breaker-Representation"><a href="#Circuit-Breaker-Representation" class="headerlink" title="Circuit Breaker Representation"></a>Circuit Breaker Representation</h3><p>A circuit breaker represents an upstream endpoint or a 3rd party service.</p>
+<pre class="line-numbers"><code class="lang-go">// State represents a state of a CircuitBreaker.
+type State int
+
+// These are the states of a CircuitBreaker.
+const (
+    StateClosed State = iota
+    StateHalfOpen
+    StateOpen
+)
+
+// CircuitBreaker represents a circuit breaker
+type CircuitBreaker struct &#123;
+    // Circuit breaker key
+    Key string `json:"key"`
+    // Circuit breaker tenant id
+    TenantId string `json:"tenant_id"`
+    // Circuit breaker state
+    State State `json:"state"`
+    // Number of requests in the observability window
+    Requests uint64 `json:"requests"`
+    // Percentage of failures in the observability window
+    FailureRate float64 `json:"failure_rate"`
+    // Percentage of failures in the observability window
+    SuccessRate float64 `json:"success_rate"`
+    // Time after which the circuit breaker will reset when in half-open state
+    WillResetAt time.Time `json:"will_reset_at"`
+    // Number of failed requests in the observability window
+    TotalFailures uint64 `json:"total_failures"`
+    // Number of successful requests in the observability window
+    TotalSuccesses uint64 `json:"total_successes"`
+    // Number of consecutive circuit breaker trips
+    ConsecutiveFailures uint64 `json:"consecutive_failures"`
+
+    logger *log.Logger
+&#125;
+</code></pre>
+
+<h3 id="Circuit-Breaker-Manager-Representation"><a href="#Circuit-Breaker-Manager-Representation" class="headerlink" title="Circuit Breaker Manager Representation"></a>Circuit Breaker Manager Representation</h3><p>We use a CircuitBreakerManager to manage all the circuit breakers. It comes bundled with a <code>Store</code>, <code>Configuration</code>, and <code>Clock</code>.</p>
+<pre class="line-numbers"><code class="lang-go">type CircuitBreakerManager struct &#123;
+    config         *CircuitBreakerConfig
+    logger         *log.Logger
+    clock          clock.Clock
+    store          CircuitBreakerStore
+&#125; 
+</code></pre>
+
+<h3 id="Configuring-the-CircuitBreakerManager"><a href="#Configuring-the-CircuitBreakerManager" class="headerlink" title="Configuring the CircuitBreakerManager"></a>Configuring the CircuitBreakerManager</h3><p>We expose Configuration options that allow us to tune the sample rate, timeout duration, etc.</p>
+<pre class="line-numbers"><code class="lang-go">// CircuitBreakerConfig is the configuration that all the circuit breakers will use
+type CircuitBreakerConfig struct &#123;
+    // SampleRate is the time interval (in seconds) at which the data source
+    // is polled to determine the number successful and failed requests
+    SampleRate uint64 `json:"sample_rate"`
+
+    // BreakerTimeout is the time (in seconds) after which a circuit breaker goes
+    // into the half-open state from the open state
+    BreakerTimeout uint64 `json:"breaker_timeout"`
+
+    // FailureThreshold is the % of failed requests in the observability window
+    // after which a circuit breaker will go into the open state
+    FailureThreshold uint64 `json:"failure_threshold"`
+
+    // MinimumRequestCount minimum number of requests in the observability window
+    // that will trip a circuit breaker
+    MinimumRequestCount uint64 `json:"request_count"`
+
+    // SuccessThreshold is the % of successful requests in the observability window
+    // after which a circuit breaker in the half-open state will go into the closed state
+    SuccessThreshold uint64 `json:"success_threshold"`
+
+    // ObservabilityWindow is how far back in time (in minutes) the data source is
+    // polled when determining the number successful and failed requests
+    ObservabilityWindow uint64 `json:"observability_window"`
+
+    // ConsecutiveFailureThreshold determines when we ultimately disable the endpoint.
+    // E.g., after 10 consecutive transitions from half-open → open we should disable it.
+    ConsecutiveFailureThreshold uint64 `json:"consecutive_failure_threshold"`
+&#125;
+</code></pre>
+
+<h3 id="Store"><a href="#Store" class="headerlink" title="Store"></a>Store</h3><p>We define a Store interface that describes access methods for circuit breaker state storage and distributed lock management.</p>
+<pre class="line-numbers"><code class="lang-go">type CircuitBreakerStore interface &#123;
+    // Lock used to acquire a distributed lock
+    Lock(ctx context.Context, lockKey string, expiry uint64) (*redsync.Mutex, error)
+    
+    // Unlock is used to release a distributed lock
+    Unlock(ctx context.Context, mutex *redsync.Mutex) error
+
+    // Keys returns all the keys which match the given pattern
+    Keys(context.Context, string) ([]string, error)
+
+    // GetOne returns the value given a key
+    GetOne(context.Context, string) (string, error)
+
+    // GetMany returns all the values given many keys
+    GetMany(context.Context, ...string) ([]interface&#123;&#125;, error)
+
+    // SetOne sets a key-value in the store
+    SetOne(context.Context, string, interface&#123;&#125;, time.Duration) error
+
+    // SetMany set the value of many keys
+    SetMany(context.Context, map[string]CircuitBreaker, time.Duration) error
+&#125;
+</code></pre>
+
+<h3 id="Clock"><a href="#Clock" class="headerlink" title="Clock"></a>Clock</h3><p>Finally, we define a Clock interface, which we can mock when running tests.</p>
+<pre class="line-numbers"><code class="lang-go">// A Clock is an object that can tell you the current time.
+//
+// This interface allows decoupling code that uses time from the code that creates
+// a point in time. You can use this to your advantage by injecting Clocks into interfaces
+// rather than having implementations call time.Now() directly.
+//
+// Use RealClock() in production.
+// Use SimulatedClock() in test.
+type Clock interface &#123;
+    Now() time.Time
+&#125;
+</code></pre>
+
+<h3 id="Initializing-the-CircuitBreakerManager"><a href="#Initializing-the-CircuitBreakerManager" class="headerlink" title="Initializing the CircuitBreakerManager"></a>Initializing the CircuitBreakerManager</h3><p>Next, we provide a constructor function to initialize the <code>CircuitBreakerManager</code> instance.</p>
+<pre class="line-numbers"><code class="lang-go">func NewCircuitBreakerManager(options ...CircuitBreakerOption) (*CircuitBreakerManager, error) &#123;
+    r := &CircuitBreakerManager&#123;&#125;
+
+    for _, opt := range options &#123;
+        err := opt(r)
+        if err != nil &#123;
+            return r, err
+        &#125;
+    &#125;
+
+    if r.store == nil &#123;
+        return nil, ErrStoreMustNotBeNil
+    &#125;
+
+    if r.clock == nil &#123;
+        return nil, ErrClockMustNotBeNil
+    &#125;
+
+    if r.config == nil &#123;
+        return nil, ErrConfigMustNotBeNil
+    &#125;
+
+    if r.logger == nil &#123;
+        return nil, ErrLoggerMustNotBeNil
+    &#125;
+
+    return r, nil
+&#125;
+
+// use it like this
+manager, err := NewCircuitBreakerManager(
+    StoreOption(store),
+    ClockOption(clock),
+    ConfigOption(config),
+    LoggerOption(log.NewLogger(os.Stdout)),
+)
+</code></pre>
+
+<p>The <code>CircuitBreakerManager</code> exposes methods to</p>
+<h4 id="Check-if-an-operation-should-be-allowed"><a href="#Check-if-an-operation-should-be-allowed" class="headerlink" title="Check if an operation should be allowed"></a>Check if an operation should be allowed</h4><pre class="line-numbers"><code class="lang-go">// CanExecute checks if the circuit breaker for a key will return an error for the current state.
+    // It will not return an error if it is in the closed state or half-open state when the failure
+    // threshold has not been reached, it will also fail-open if the circuit breaker is not found.
+    func (cb *CircuitBreakerManager) CanExecute(ctx context.Context, key string) error &#123;
+        b, err := cb.GetCircuitBreaker(ctx, key)
+        if err != nil &#123;
+            return err
+        &#125;
+    
+        if b != nil &#123;
+            return cb.getCircuitBreakerError(b)
+        &#125;
+    
+        return nil
+    &#125;
+    
+    func (cb *CircuitBreakerManager) getCircuitBreakerError(b *CircuitBreaker) error &#123;
+        switch b.State &#123;
+        case StateOpen:
+            return ErrOpenState
+        case StateHalfOpen:
+            if b.FailureRate > float64(cb.config.FailureThreshold) && b.WillResetAt.After(cb.clock.Now()) &#123;
+                return ErrTooManyRequests
+            &#125;
+            return nil
+        default:
+            return nil
+        &#125;
+    &#125;
+</code></pre>
+
+<h4 id="Acquire-and-release-the-distributed-lock"><a href="#Acquire-and-release-the-distributed-lock" class="headerlink" title="Acquire and release the distributed lock."></a>Acquire and release the distributed lock.</h4><pre class="line-numbers"><code class="lang-go">func (cb *CircuitBreakerManager) sampleAndUpdate(ctx context.Context, pollFunc PollFunc) error &#123;
+    ...
+    
+    mu, err := cb.store.Lock(ctx, mutexKey, cb.config.SampleRate)
+    if err != nil &#123;
+        isLeader = false
+        cb.logger.WithError(err).Debugf("[circuit breaker] failed to acquire lock")
+        return err
+    &#125;
+
+    defer func() &#123;
+        ...
+        
+        innerErr := cb.store.Unlock(ctx, mu)
+        if innerErr != nil &#123;
+            cb.logger.WithError(innerErr).Debugf("[circuit breaker] failed to unlock mutex")
+        &#125;
+
+        ...
+    &#125;()
+
+    ...
+
+    // Get the failure and success counts from the last X minutes
+    pollResults, err := pollFunc(ctx, cb.config.ObservabilityWindow, resetMap)
+    if err != nil &#123;
+        return fmt.Errorf("poll function failed: %w", err)
+    &#125;
+
+    if len(pollResults) == 0 &#123;
+        return nil // Nothing to update
+    &#125;
+
+    if err = cb.sampleStore(ctx, pollResults); err != nil &#123;
+        return fmt.Errorf("[circuit breaker] failed to sample events and update state: %w", err)
+    &#125;
+
+    return nil
+&#125;
+</code></pre>
+
+<h4 id="Sample-the-database-update-the-circuit-breaker-state-and-write-back-to-Redis"><a href="#Sample-the-database-update-the-circuit-breaker-state-and-write-back-to-Redis" class="headerlink" title="Sample the database, update the circuit breaker state, and write back to Redis."></a>Sample the database, update the circuit breaker state, and write back to Redis.</h4><pre class="line-numbers"><code class="lang-go">func (cb *CircuitBreakerManager) sampleStore(ctx context.Context, pollResults map[string]PollResult) error &#123;
+    redisCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+    defer cancel()
+
+    circuitBreakers := make(map[string]CircuitBreaker, len(pollResults))
+
+    keys, tenants, j := make([]string, len(pollResults)), make([]string, len(pollResults)), 0
+    for k := range pollResults &#123;
+        tenants[j] = pollResults[k].TenantId
+
+        key := fmt.Sprintf("%s%s", prefix, k)
+        keys[j] = key
+        j++
+    &#125;
+
+    res, err := cb.store.GetMany(redisCtx, keys...)
+    if err != nil &#123;
+        return err
+    &#125;
+
+    // marshall res values into circuitBreaker map
+    ...
+
+    // calculate the new state for each circuit breaker
+    for key, breaker := range circuitBreakers &#123;
+        k := strings.Split(key, ":")
+        result := pollResults[k[1]]
+
+        breaker.TotalFailures = result.Failures
+        breaker.TotalSuccesses = result.Successes
+        breaker.Requests = breaker.TotalSuccesses + breaker.TotalFailures
+
+        if breaker.Requests == 0 &#123;
+            breaker.FailureRate = 0
+            breaker.SuccessRate = 0
+        &#125; else &#123;
+            breaker.FailureRate = float64(breaker.TotalFailures) / float64(breaker.Requests) * 100
+            breaker.SuccessRate = float64(breaker.TotalSuccesses) / float64(breaker.Requests) * 100
+        &#125;
+
+        if breaker.State == StateHalfOpen && breaker.SuccessRate >= float64(cb.config.SuccessThreshold) &#123;
+            breaker.Reset(cb.clock.Now().Add(time.Duration(cb.config.BreakerTimeout) * time.Second))
+        &#125; else if breaker.State != StateOpen && breaker.Requests >= cb.config.MinimumRequestCount &#123;
+            if breaker.FailureRate >= float64(cb.config.FailureThreshold) &#123;
+                breaker.trip(cb.clock.Now().Add(time.Duration(cb.config.BreakerTimeout) * time.Second))
+            &#125;
+        &#125;
+
+        if breaker.State == StateOpen && cb.clock.Now().After(breaker.WillResetAt) &#123;
+            breaker.toHalfOpen()
+        &#125;
+
+        circuitBreakers[key] = breaker
+    &#125;
+
+    // write the updated state back to the store
+    if err = cb.updateCircuitBreakers(ctx, circuitBreakers); err != nil &#123;
+        cb.logger.WithError(err).Error("[circuit breaker] failed to update state")
+        return err
+    &#125;
+
+    return nil
+&#125;
+</code></pre>
+
+<h2 id="Benefits-in-production"><a href="#Benefits-in-production" class="headerlink" title="Benefits in production?"></a>Benefits in production?</h2><p>We began testing this in production and found some pretty interesting graph. One of our self-hosted customers was averaging about 100k failed delivery attempts/day (~10% of their traffic; they send about 600k events/day) due to zombie endpoints. Now it’s down to about 5k per day. That’s a 95% improvement. It turns out the ideal metric of success is the % of failed delivery attempts should be less than a number depending on the scale of deployment.</p>
+<p><img src="/images/circuit-breaker-graph.png" alt="Event Performance Graph"><span class="image-caption">Event Performance Graph</span></p>
+<h2 id="Failure-Scenarios"><a href="#Failure-Scenarios" class="headerlink" title="Failure Scenarios"></a>Failure Scenarios</h2><p>Applying Murphy’s law [5] to our design; some possible production failure scenarios include:</p>
+<ol>
+<li><strong>The leader agent goes down during state evaluation:</strong> The state evaluation process is an atomic operation (we use a Redis pipeline for writes); it either all works or nothing works. At the next sample cycle, a new leader will be elected and will carry out state evaluation.</li>
+<li><strong>All circuit keys are flushed from Redis.</strong> The following sample cycle will generate the <code>error_rate</code> again and rebuild the circuit’s state; eventually, zombie endpoints will be disabled again.</li>
+<li><strong>Redis is down:</strong> We have timeouts to ensure that clients are not hung up on Redis and the circuit “fails-open” as if it wasn’t there in the first place.</li>
+</ol>
+<p>In conclusion, we’re excited to introduce this feature in beta into the core gateway. Please test and tune the circuit and share your feedback!</p>
+<h2 id="Appendix"><a href="#Appendix" class="headerlink" title="Appendix"></a>Appendix</h2><ol>
+<li>In the future, we plan to implement a proper leader-election algorithm, but for now, a distributed lock can suffice.</li>
+<li>This summarizes the difference between a synchronous circuit breaker and an asynchronous breaker.<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Synchronous Circuit Breakers</th>
+<th>Asynchronous Circuit Breakers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Execution Model</strong></td>
+<td>Runs in the same thread/process as request</td>
+<td>Runs in separate threads/processes</td>
+</tr>
+<tr>
+<td><strong>Operation Flow</strong></td>
+<td>Blocks until health check/state evaluation completes</td>
+<td>Non-blocking health checks/state evaluation</td>
+</tr>
+<tr>
+<td><strong>Store</strong></td>
+<td>Local to the process</td>
+<td>Global (shared by all processes)</td>
+</tr>
+<tr>
+<td><strong>Transition Mechanism</strong></td>
+<td>Immediate</td>
+<td>Eventual</td>
+</tr>
+<tr>
+<td><strong>Implementation</strong></td>
+<td>Simple, relatively easy to follow order of execution</td>
+<td>More complex, harder to follow order of execution</td>
+</tr>
+<tr>
+<td><strong>Complexity</strong></td>
+<td>Lower architectural complexity</td>
+<td>Higher architectural complexity</td>
+</tr>
+<tr>
+<td><strong>Error Handling</strong></td>
+<td>Happens immediately in a caller</td>
+<td>Errors are non-blocking and are passed to callback handlers</td>
+</tr>
+<tr>
+<td><strong>Use Cases</strong></td>
+<td>Sequential operations, Based used in order-dependent flows, Simple request-response patterns</td>
+<td>Used in high-throughput systems, Promotes designing parallel operations in event-driven architectures</td>
+</tr>
+<tr>
+<td><strong>Monitoring</strong></td>
+<td>Real-time state visibility, state can be inspected using a debugger</td>
+<td>Eventually consistent state, state can be inspected using metrics</td>
+</tr>
+<tr>
+<td><strong>System Load</strong></td>
+<td>Can cause request queuing leading to backpressure</td>
+<td>Better load distribution due to non-blocking behaviour</td>
+</tr>
+</tbody></table>
+</li>
+<li><a target="_blank" rel="noopener" href="https://www.postgresql.org/message-id/AANLkTimQsgv0aiO2ivVQ6r1Pte6v7gXgGDMRP7i3C2MQ%40mail.gmail.com">Re: Trigger function in a multi-threaded environment behavior</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cybertec-postgresql.com/en/rules-or-triggers-to-log-bulk-updates/">Rules or triggers to log bulk updates?</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Murphy%27s_law">Murphy’s Law</a></li>
+<li><a target="_blank" rel="noopener" href="https://aws.amazon.com/builders-library/reliability-and-constant-work/">Reliability, constant work, and a good cup of coffee</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Blog</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Synchronous-vs-Asynchronous-circuit-breakers"><span class="toc-number">1.</span> <span class="toc-text">Synchronous vs. Asynchronous circuit breakers</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Synchronous-Circuit-Breakers"><span class="toc-number">1.1.</span> <span class="toc-text">Synchronous Circuit Breakers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Asynchronous-Circuit-Breakers"><span class="toc-number">1.2.</span> <span class="toc-text">Asynchronous Circuit Breakers</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Our-Circuit-Breaker-Requirements"><span class="toc-number">2.</span> <span class="toc-text">Our Circuit Breaker Requirements</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Core-Requirements"><span class="toc-number">2.1.</span> <span class="toc-text">Core Requirements</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution-1-Using-Redis-and-Etcd"><span class="toc-number">3.</span> <span class="toc-text">Solution #1: Using Redis and Etcd</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Shared-Metrics-in-Redis"><span class="toc-number">3.1.</span> <span class="toc-text">Shared Metrics in Redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#State-Management-in-etcd"><span class="toc-number">3.2.</span> <span class="toc-text">State Management in etcd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Workflow"><span class="toc-number">3.3.</span> <span class="toc-text">Workflow:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pros"><span class="toc-number">3.4.</span> <span class="toc-text">Pros</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cons"><span class="toc-number">3.5.</span> <span class="toc-text">Cons</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Solution-2-Using-Redis-and-PostgreSQL-LISTEN-NOTIFY-leader-election-using-RedLock"><span class="toc-number">4.</span> <span class="toc-text">Solution #2: Using Redis and PostgreSQL: LISTEN&#x2F;NOTIFY + leader election using RedLock</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PostgreSQL-triggers-the-event"><span class="toc-number">4.1.</span> <span class="toc-text">PostgreSQL triggers the event</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#State-management-in-Redis"><span class="toc-number">4.2.</span> <span class="toc-text">State management in Redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Workflow-1"><span class="toc-number">4.3.</span> <span class="toc-text">Workflow</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pros-1"><span class="toc-number">4.4.</span> <span class="toc-text">Pros</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cons-1"><span class="toc-number">4.5.</span> <span class="toc-text">Cons</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Our-Solution-Use-Redis-and-Postgres-Database-Polling-leader-election-using-RedLock"><span class="toc-number">5.</span> <span class="toc-text">Our Solution: Use Redis and Postgres Database Polling + leader election using RedLock</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PostgreSQL"><span class="toc-number">5.1.</span> <span class="toc-text">PostgreSQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis"><span class="toc-number">5.2.</span> <span class="toc-text">Redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Workflow-2"><span class="toc-number">5.3.</span> <span class="toc-text">Workflow</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Implementation"><span class="toc-number">6.</span> <span class="toc-text">Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Circuit-Breaker-Representation"><span class="toc-number">6.1.</span> <span class="toc-text">Circuit Breaker Representation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Circuit-Breaker-Manager-Representation"><span class="toc-number">6.2.</span> <span class="toc-text">Circuit Breaker Manager Representation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Configuring-the-CircuitBreakerManager"><span class="toc-number">6.3.</span> <span class="toc-text">Configuring the CircuitBreakerManager</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Store"><span class="toc-number">6.4.</span> <span class="toc-text">Store</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Clock"><span class="toc-number">6.5.</span> <span class="toc-text">Clock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Initializing-the-CircuitBreakerManager"><span class="toc-number">6.6.</span> <span class="toc-text">Initializing the CircuitBreakerManager</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Check-if-an-operation-should-be-allowed"><span class="toc-number">6.6.1.</span> <span class="toc-text">Check if an operation should be allowed</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Acquire-and-release-the-distributed-lock"><span class="toc-number">6.6.2.</span> <span class="toc-text">Acquire and release the distributed lock.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Sample-the-database-update-the-circuit-breaker-state-and-write-back-to-Redis"><span class="toc-number">6.6.3.</span> <span class="toc-text">Sample the database, update the circuit breaker state, and write back to Redis.</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Benefits-in-production"><span class="toc-number">7.</span> <span class="toc-text">Benefits in production?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Failure-Scenarios"><span class="toc-number">8.</span> <span class="toc-text">Failure Scenarios</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Appendix"><span class="toc-number">9.</span> <span class="toc-text">Appendix</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&text=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&is_video=false&description=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints&body=Check out this article: https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&title=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&name=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/convoy-designing-a-circuit-breaker-for-disabling-webhook-endpoints.html&t=Convoy: Designing A Circuit Breaker For Disabling Webhook Endpoints"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    Raymond Tukpe
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blog</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WBT5Z15WML"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-WBT5Z15WML');
+    </script>
+
+<!-- Mix Panel -->
+
+  <script type="text/javascript">
+    (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
+    for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".split(" ");a.get_group=function(){function b(c){d[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));a.push([e,call2])}}for(var d={},e=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<j.length;c++)b(j[c]);return d};b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?
+    MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+    
+    // Enabling the debug mode flag is useful during implementation,
+    // but it's recommended you remove it for production
+    mixpanel.init('9610491ecd39092940c531190faae9e7', {ignore_dnt: true}); 
+    mixpanel.track('Viewed'); 
+    </script>
+    
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
