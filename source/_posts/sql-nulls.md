@@ -6,7 +6,7 @@ tags:
   - tech
   - interactive
 ---
-Yes, you read that right. SQL does treat all NULL values differently. I learnt this a while back while working on [Convoy](https://getconvoy.io/) and again on [LiteQueue](https:/github.com/jirevwe/litequeue): a Golang a queueing library. 
+Yes, you read that right. SQL does treat all NULLs as distinct values. I learnt this a while back while working on [Convoy](https://getconvoy.io/) and again on [LiteQueue](https:/github.com/jirevwe/litequeue): a Golang a queueing library. 
 
 Basically, any column with a UNIQUE constraint can have multiple NULL values, because each NULL value is a distinct value that is different from other NULLs, and this is even less obvious if you're used to using ORMs. I tested this with SQLite, Postgres and MYSQL and they all behave like this. Let's prove this with some examples
 
@@ -213,8 +213,11 @@ select * from sample;</code></pre>
 Using a partial index is the best way to ensure the unique constraint is held without making your table wider, managing an extra field, it consumes less space and isn’t (AS) error-prone when deleting the same record pair over and over again! 
 
 ## Update
-* Relevant HN Discussion: https://news.ycombinator.com/item?id=42645110
-* Oracle treats empty strings are NULL for some reason, welp!
+* [Oracle treats empty strings as NULL for some reason](https://stackoverflow.com/a/13278879), welp!
+* Modern database engines allow you to specify if you want to NULLs to be distinct. [//]: todo: edit article to show this behaviour
+    * https://news.ycombinator.com/item?id=42651648
+* Relevant HN discussion: https://news.ycombinator.com/item?id=42645110
+* Relevant discussion on Reddit r/programming: https://www.reddit.com/r/programming/comments/1hxi1tg/sql_nulls_are_weird/
 
 ## Conclusion
 While this might seem trivial to experienced engineers and invisible when you use an ORM; it's often overlooked and can lead to confusion if you don't know how it works. Another fun thing I discovered is that the SQL standard document (think HTTP RFC but for SQL) isn't publicly available, but can be procured for a fee.
