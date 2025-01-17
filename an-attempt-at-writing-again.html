@@ -58,6 +58,19 @@
     <!-- codapi css -->
     <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
 
+    <!-- codapi postgres -->
+    <script defer type="module">
+        import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+        window.PGlite = PGlite;
+    </script>
+    <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
+
+    <!-- codapi sqlite -->
+    <script defer src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
+    <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
+
+    <!-- codapi  -->
+    <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
     <!-- code highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -275,20 +288,6 @@
       </ul>
     </nav>
   </div>
-
-  <!-- codapi postgres -->
-  <script defer type="module">
-    import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
-    window.PGlite = PGlite;
-  </script>
-  <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
-
-  <!-- codapi sqlite -->
-  <script defer src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
-  <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
-
-  <!-- codapi  -->
-  <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
 </footer>
 
     </div>
