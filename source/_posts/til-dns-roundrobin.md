@@ -2,7 +2,7 @@
 title: TIL - DNS Roundrobin
 date: 2023-05-12 10:02:06
 tags:
-    - today i learned
+    - til
     - dns
     - load balancing
 ---

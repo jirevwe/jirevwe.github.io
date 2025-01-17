@@ -5,14 +5,14 @@
     "desc": "An Open Source Fast and Secure Webhooks Service."
   },
   {
+    "name": "go_partman",
+    "url": "https://github.com/jirevwe/go_partman",
+    "desc": "A Go native implementation of PostgreSQL table partitioning management, inspired by pg_partman."
+  },
+  {
     "name": "rs",
     "url": "https://github.com/jirevwe/rs",
     "desc": "rs is a zero config mongodb replica set runner"
-  },
-  {
-    "name": "cascade",
-    "url": "https://github.com/jirevwe/cascade",
-    "desc": "Casade is a tool cascades soft deletes or hard deletes in any replicated mongodb database"
   },
   {
     "name": "Gomoney",

@@ -88,7 +88,7 @@ feed:
   autodiscovery: true
   template:
 
-# add caption for iamges
+# add caption for images
 image_caption:
   enable: true #false to disable
   class_name: "image-caption"
