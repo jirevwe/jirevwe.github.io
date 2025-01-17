@@ -14,7 +14,7 @@
 <meta property="og:description" content="UUIDv4 and ULID are both types of unique identifiers that can be used in distributed systems. UUIDv4 stands for Universally Unique Identifier version 4, and ULID stands for Universally Unique Lexicogr">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-11-28T13:05:40.000Z">
-<meta property="article:modified_time" content="2025-01-15T16:23:06.589Z">
+<meta property="article:modified_time" content="2025-01-17T12:01:58.267Z">
 <meta property="article:author" content="Raymond Tukpe">
 <meta property="article:tag" content="convoy">
 <meta property="article:tag" content="tech">
@@ -59,13 +59,6 @@
 	
     <!-- codapi css -->
     <link rel="stylesheet" href="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.css" />
-
-    <!-- codapi sqlite   -->
-    <script src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
-    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
-
-    <!-- codapi  -->
-    <script src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
 
     <!-- code highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
@@ -146,16 +139,16 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://www.facebook.com/sharer.php?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&text=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https//www.linkedin.com/shareArticle?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&is_video=false&description=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
   <li><a class="icon" href="mailto:?subject=Exploring alternatives to UUIDv4; Enter ULIDs.&body=Check out this article: https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&name=Exploring alternatives to UUIDv4; Enter ULIDs.&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://reddit.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://www.stumbleupon.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://digg.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://www.tumblr.com/share/link?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&name=Exploring alternatives to UUIDv4; Enter ULIDs.&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&t=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
@@ -169,7 +162,7 @@
     
     <div class="content index py4">
         
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope itemtype="https://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -179,7 +172,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope itemtype="https://schema.org/Person">
         <span itemprop="name">Raymond Tukpe</span>
       </span>
       
@@ -286,6 +279,9 @@ select gen_random_uuid() FROM generate_series(1, 10000000);
 </code></pre>
 
 <h3 id="Inserting"><a href="#Inserting" class="headerlink" title="Inserting"></a>Inserting</h3><p>When inserting <strong>ULID</strong>s, it takes about <strong>3.27x longer</strong> than <strong>UUID</strong>s inserts. This reflects the additional computational overhead for inserting <strong>ULID</strong>s.</p>
+<blockquote>
+<p>The implementation I have used to generate in this sample ULIDs is not performant. I shall use another solution and graph the results again. You might want to generate them at client side aas that is what we use in Convoy.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -371,16 +367,16 @@ SELECT generate_ulid(now()) FROM generate_series(1, 1000000);
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://www.facebook.com/sharer.php?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&text=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https//www.linkedin.com/shareArticle?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&is_video=false&description=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" href="mailto:?subject=Exploring alternatives to UUIDv4; Enter ULIDs.&body=Check out this article: https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&name=Exploring alternatives to UUIDv4; Enter ULIDs.&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://reddit.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://www.stumbleupon.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://digg.com/submit?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&title=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://www.tumblr.com/share/link?url=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&name=Exploring alternatives to UUIDv4; Enter ULIDs.&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://raymondtukpe.com/exploring-alternatives-to-uuidv4-enter-ulids.html&t=Exploring alternatives to UUIDv4; Enter ULIDs."><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
@@ -418,6 +414,20 @@ SELECT generate_ulid(now()) FROM generate_series(1, 1000000);
       </ul>
     </nav>
   </div>
+
+  <!-- codapi postgres -->
+  <script defer type="module">
+    import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+    window.PGlite = PGlite;
+  </script>
+  <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
+
+  <!-- codapi sqlite -->
+  <script defer src="https://unpkg.com/@antonz/runno@0.6.1/dist/runno.js"></script>
+  <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/wasi.js"></script>
+
+  <!-- codapi  -->
+  <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/snippet.js"></script>
 </footer>
 
     </div>
