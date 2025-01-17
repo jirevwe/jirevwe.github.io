@@ -84,6 +84,8 @@ select gen_random_uuid() FROM generate_series(1, 10000000);
 ### Inserting
 When inserting **ULID**s, it takes about **3.27x longer** than **UUID**s inserts. This reflects the additional computational overhead for inserting **ULID**s.
 
+> The implementation I have used to generate in this sample ULIDs is not performant. I shall use another solution and graph the results again. You might want to generate them at client side aas that is what we use in Convoy.
+
 | **Operation**                       | **1M Rows (s)** | **10M Rows (s)** | **100M Rows (s)** | 
 |-------------------------------------|-----------------|------------------|-------------------|
 | **UUID Insert** (`gen_random_uuid`) | 1.76            | 18.10            | 187.51            |

@@ -23,7 +23,7 @@ nav:
 # (see https://fontawesome.com/icons?d=gallery&s=brands);
 # only 'mail' is an exception.
 social_links:
-  github: http://github.com/jirevwe
+  github: https://github.com/jirevwe
   linkedin: https://www.linkedin.com/in/rtukpe/
   twitter: https://www.twitter.com/rtukpe/
   mail: mailto:rtukpe@gmail.com
@@ -85,7 +85,7 @@ logo:
 #   - desktop: The classic favion.ico file.
 #   - android: A 192x192 PNG file.
 #   - apple:  A 180x180 PNG file.
-# These can be generated with http://realfavicongenerator.net/
+# These can be generated with https://realfavicongenerator.net/
 # Options:
 #   - url: where the icon can be found
 #   - gravatar: whether to create a favicon from your Gravatar
@@ -119,7 +119,7 @@ page_width: 48
 # Enable or disable the RSS feed.
 rss: true
 
-# Turn your web pages into graph objects (see http://ogp.me).
+# Turn your web pages into graph objects (see https://ogp.me).
 open_graph:
   fb_app_id:
   fb_admins:
