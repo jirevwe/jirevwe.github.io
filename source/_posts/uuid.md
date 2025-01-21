@@ -69,16 +69,20 @@ This provides several nice properties:
 ### Generating
 When creating both **UUIDs** and **ULIDs**, the process of generating **ULIDs** is a little slower when producing 100 million values, and the difference is negligible when generating and inserting 1 million values. Generating **ULIDs** are slower than **UUIDs**, though, the benefits of a sortable globally unique identifier make the tradeoff worth it.
 
-| **Identifier**               | **1M Rows (ms)** | **10M Rows (ms)** | **100M Rows (s)** |
-|------------------------------|------------------|-------------------|-------------------|
-| **UUID** (`gen_random_uuid`) | 205              | 732               | 5.5               |
-| **ULID** (`generate_ulid`)   | 262              | 845               | 5.9               |
+| **Identifier**               | ID Version                                         | **1M Rows (ms)** | **10M Rows (ms)** | **100M Rows (s)** |
+|------------------------------|----------------------------------------------------|------------------|-------------------|-------------------|
+| **UUID** (`gen_random_uuid`) | Pg Native UUIDv4                                   | 205              | 732               | 5.5               |
+| **ULID** (`gen_ulid`)        | [pg_ulid](https://github.com/andrielfn/pg-ulid)    | 250              | 805               | 5.7               |
+| **ULID** (`generate_ulid`)   | [pgulid](https://github.com/geckoboard/pgulid)     | 262              | 845               | 5.9               |
 
 <pre><code class="lang-sql">select generate_ulid(clock_timestamp()) FROM generate_series(1, 10000000);
 -- 100m - 5.9s, 10m - 845ms, 1m - 262ms
 
 select gen_random_uuid() FROM generate_series(1, 10000000);
 -- 100m - 5.5s, 10m - 732ms, 1m - 205ms
+
+select gen_ulid() FROM generate_series(1, 10000000);
+-- 100m - 5.7s, 10m - 805ms, 1m - 250ms
 </code></pre>
 
 ### Inserting
