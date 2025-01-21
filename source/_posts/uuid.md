@@ -13,7 +13,7 @@ tags:
 To name a few:
 - [ksuid](https://github.com/segmentio/ksuid): KSUIDs are 20 bytes (160 bits) IDs with 1-second precision (correctly detects and handles the same second), encoded in alphanumeric [base62](https://en.wikipedia.org/wiki/Base62) as 27 character strings, are URL-friendly and are also lexicographically sortable.  
 - [ulid](https://github.com/ulid/spec): ULIDs are 128-bit (16 bytes) IDs with millisecond precision (correctly detects and handles the same millisecond), they are also lexicographically sortable, URL-friendly and are encoded using [Crockford's base32](https://www.crockford.com/base32.html) as 26 character strings.
-- [nanoid](https://github.com/ai/nanoid): made at [Evil Martians](https://evilmartians.com/devtools); Nano ID is tiny (124 bytes), secure, URL-friendly, unique ID generator. It is quite comparable to UUID v4 (random-based). It has a similar number of random bits in the ID (126 in Nano ID and 122 in UUID), so it has a similar collision probability.
+- [nanoid](https://github.com/ai/nanoid): made at [Evil Martians](https://evilmartians.com/devtools); Nano ID is a secure, URL-friendly, unique ID generator. It is quite comparable to UUID v4 (random-based). It has a similar number of random bits in the ID (126 in Nano ID and 122 in UUID), so it has a similar collision probability.
 
 **ULID**s combines a timestamp and a random component to generate a unique value that is also lexicographically sortable.
 
@@ -71,10 +71,10 @@ When creating both **UUIDs** and **ULIDs**, the process of generating **ULIDs** 
 
 | **Identifier**               | **1M Rows (ms)** | **10M Rows (ms)** | **100M Rows (s)** |
 |------------------------------|------------------|-------------------|-------------------|
-| **ULID** (`generate_ulid`)   | 262              | 845               | 5.9               |
 | **UUID** (`gen_random_uuid`) | 205              | 732               | 5.5               |
+| **ULID** (`generate_ulid`)   | 262              | 845               | 5.9               |
 
-<pre><code class="lang-sql">select generate_ulid(now()) FROM generate_series(1, 10000000);
+<pre><code class="lang-sql">select generate_ulid(clock_timestamp()) FROM generate_series(1, 10000000);
 -- 100m - 5.9s, 10m - 845ms, 1m - 262ms
 
 select gen_random_uuid() FROM generate_series(1, 10000000);
@@ -84,12 +84,11 @@ select gen_random_uuid() FROM generate_series(1, 10000000);
 ### Inserting
 When inserting **ULID**s, it takes about **3.27x longer** than **UUID**s inserts. This reflects the additional computational overhead for inserting **ULID**s.
 
-> The implementation I have used to generate in this sample ULIDs is not performant. I shall use another solution and graph the results again. You might want to generate them at client side aas that is what we use in Convoy.
-
-| **Operation**                       | **1M Rows (s)** | **10M Rows (s)** | **100M Rows (s)** | 
-|-------------------------------------|-----------------|------------------|-------------------|
-| **UUID Insert** (`gen_random_uuid`) | 1.76            | 18.10            | 187.51            |
-| **ULID Insert** (`generate_ulid`)   | 5.75            | 58.04            | 586.48            |
+| **Operation**                       | ID Version                                      | **1M Rows (s)** | **10M Rows (s)** | **100M Rows (s)** | 
+|-------------------------------------|-------------------------------------------------|-----------------|------------------|-------------------|
+| **UUID Insert** (`gen_random_uuid`) | Pg Native UUIDv4                                | 1.76            | 18.10            | 187.51            |
+| **ULID Insert** (`gen_ulid`)        | [pg_ulid](https://github.com/andrielfn/pg-ulid) | 2.18            | 21.74            | 243.23            |
+| **ULID Insert** (`generate_ulid`)   | [pgulid](https://github.com/geckoboard/pgulid)  | 5.75            | 58.04            | 586.48            |
 
 <pre><code class="lang-sql">drop table uuid_test;
 drop table ulid_test;
@@ -98,11 +97,15 @@ CREATE TABLE ulid_test(id TEXT);
 
 EXPLAIN ANALYSE INSERT INTO uuid_test(id)
 SELECT gen_random_uuid() FROM generate_series(1, 1000000);
--- 100m - 187510.769ms, 10m - 18100.076ms, 1m - 1755.845ms
+-- 100m - 187510ms, 10m - 18100ms, 1m - 1755ms
 
-EXPLAIN ANALYSE INSERT INTO ulid_test(id)
-SELECT generate_ulid(now()) FROM generate_series(1, 1000000);
--- 100m - 586484.947ms, 10m - 58038.249ms, 1m - 5745.083ms
+EXPLAIN ANALYSE INSERT INTO ulid_test(id) 
+SELECT generate_ulid(clock_timestamp()) FROM generate_series(1, 1000000);
+-- 100m - 586484ms, 10m - 58038ms, 1m - 5745ms
+
+EXPLAIN ANALYSE INSERT INTO 
+ulid_test(id) SELECT gen_ulid() FROM generate_series(1, 100000000);
+-- 100m - 243232ms, 10m - 21739ms, 1m - 2083ms
 </code></pre>
 
 ### Timing
