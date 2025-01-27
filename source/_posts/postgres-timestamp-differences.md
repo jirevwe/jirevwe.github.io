@@ -159,7 +159,7 @@ When generating IDs using a custom function (for example UUIDv7 [1]) only `CLOCK
 <pre><code class="lang-sql">with x as (
     select 
         clock_timestamp() as c,
-        statement_timestamp() as s, -- you can replace this with now(), transaction_timestamp() or current_timestamp
+        statement_timestamp() as s, -- you can replace this with now(), transaction_timestamp() or current_timestamp    
         n
    from generate_series(1, 10) as g(n)
 )
@@ -173,16 +173,24 @@ from x;
 <codapi-snippet sandbox="postgres" editor="basic" template="#uuid7.sql"></codapi-snippet>
 
 ## Conclusion
-For most use cases [2] `NOW()` or `CURRENT_TIMESTAMP` are sufficient
+For most use cases [2] `NOW()` or `CURRENT_TIMESTAMP` are sufficient, if you need more accuracy when dealing with time in a complex query you should consider using either `CLOCK_TIMESTAMP()` or `STATEMENT_TIMESTAMP()`.
+
+### When to Use STATEMENT_TIMESTAMP():
+- **Statement-Level Timing:** If you need to capture the exact time when a particular SQL statement begins execution, `STATEMENT_TIMESTAMP()` is appropriate.
+- **Consistency Within Statements:** For scenarios where consistency within a single statement is needed, and you want a uniform timestamp for all operations within that statement, it ensures that you get the same time.
+
+### When to Use CLOCK_TIMESTAMP():
+- **High-Precision Timing:** If your application requires precise or high-resolution timing measurements, such as benchmarking or profiling code execution, `CLOCK_TIMESTAMP()` is suitable.
+- **Real-Time Monitoring:** For real-time applications where capturing the exact current time is essential, especially within long-running transactions, functions or procedures, it provides the necessary precision.
 
 ## Footnotes
-1. [UUIDv7](https://gist.github.com/fabiolimace/515a0440e3e40efeb234e12644a6a346#file-uuidv7-sql-L39) function used
-2. Common timestamp use cases
-   1. Audit Trails
-   2. Time-Based Analytics
-   3. Data Cleanup/Maintenance
-   4. Session Management
-   5. Report Generation
-   6. Rate Limiting
-   7. Data Versioning
+1. [UUIDv7](https://gist.github.com/fabiolimace/515a0440e3e40efeb234e12644a6a346#file-uuidv7-sql-L39) function used.
+2. Some common or general timestamp use cases:
+   * Audit Trails
+   * Time-Based Analytics
+   * Data Cleanup/Maintenance
+   * Session Management
+   * Report Generation
+   * Rate Limiting
+   * Data Versioning
 
