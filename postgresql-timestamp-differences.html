@@ -14,7 +14,7 @@
 <meta property="og:description" content="While working on my ULID post, I looked into ways to generate ULIDs from a timestamp and came across geckoboard&#x2F;pgluid which implements the function in Pl&#x2F;PgSQL. What really caught my eye was how the">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-01-15T21:12:22.000Z">
-<meta property="article:modified_time" content="2025-01-27T10:09:06.289Z">
+<meta property="article:modified_time" content="2025-01-27T10:19:29.512Z">
 <meta property="article:author" content="Raymond Tukpe">
 <meta property="article:tag" content="tech">
 <meta property="article:tag" content="postgres">
@@ -165,7 +165,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Timestamps-in-Postgres"><span class="toc-number">1.</span> <span class="toc-text">Timestamps in Postgres</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Testing-it-out"><span class="toc-number">2.</span> <span class="toc-text">Testing it out</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Outside-a-transaction"><span class="toc-number">2.1.</span> <span class="toc-text">Outside a transaction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Inside-a-transaction"><span class="toc-number">2.2.</span> <span class="toc-text">Inside a transaction</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Practical-Use-Cases"><span class="toc-number">3.</span> <span class="toc-text">Practical Use Cases</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Benchmarking-Queries"><span class="toc-number">3.1.</span> <span class="toc-text">Benchmarking Queries</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generating-IDs"><span class="toc-number">3.2.</span> <span class="toc-text">Generating IDs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Footnotes"><span class="toc-number">5.</span> <span class="toc-text">Footnotes</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Timestamps-in-Postgres"><span class="toc-number">1.</span> <span class="toc-text">Timestamps in Postgres</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Testing-it-out"><span class="toc-number">2.</span> <span class="toc-text">Testing it out</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Outside-a-transaction"><span class="toc-number">2.1.</span> <span class="toc-text">Outside a transaction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Inside-a-transaction"><span class="toc-number">2.2.</span> <span class="toc-text">Inside a transaction</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Practical-Use-Cases"><span class="toc-number">3.</span> <span class="toc-text">Practical Use Cases</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Benchmarking-Queries"><span class="toc-number">3.1.</span> <span class="toc-text">Benchmarking Queries</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generating-IDs"><span class="toc-number">3.2.</span> <span class="toc-text">Generating IDs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#When-to-Use-STATEMENT-TIMESTAMP"><span class="toc-number">4.1.</span> <span class="toc-text">When to Use STATEMENT_TIMESTAMP():</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#When-to-Use-CLOCK-TIMESTAMP"><span class="toc-number">4.2.</span> <span class="toc-text">When to Use CLOCK_TIMESTAMP():</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Footnotes"><span class="toc-number">5.</span> <span class="toc-text">Footnotes</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -345,7 +345,7 @@ $$ language plpgsql;
 <pre><code class="lang-sql">with x as (
     select 
         clock_timestamp() as c,
-        statement_timestamp() as s, -- you can replace this with now(), transaction_timestamp() or current_timestamp
+        statement_timestamp() as s, -- you can replace this with now(), transaction_timestamp() or current_timestamp    
         n
    from generate_series(1, 10) as g(n)
 )
@@ -357,10 +357,18 @@ select x.n,
 from x;
 </code></pre>
 <p><codapi-snippet sandbox="postgres" editor="basic" template="#uuid7.sql"></codapi-snippet></p>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>For most use cases [2] <code>NOW()</code> or <code>CURRENT_TIMESTAMP</code> are sufficient</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>For most use cases [2] <code>NOW()</code> or <code>CURRENT_TIMESTAMP</code> are sufficient, if you need more accuracy when dealing with time in a complex query you should consider using either <code>CLOCK_TIMESTAMP()</code> or <code>STATEMENT_TIMESTAMP()</code>.</p>
+<h3 id="When-to-Use-STATEMENT-TIMESTAMP"><a href="#When-to-Use-STATEMENT-TIMESTAMP" class="headerlink" title="When to Use STATEMENT_TIMESTAMP():"></a>When to Use STATEMENT_TIMESTAMP():</h3><ul>
+<li><strong>Statement-Level Timing:</strong> If you need to capture the exact time when a particular SQL statement begins execution, <code>STATEMENT_TIMESTAMP()</code> is appropriate.</li>
+<li><strong>Consistency Within Statements:</strong> For scenarios where consistency within a single statement is needed, and you want a uniform timestamp for all operations within that statement, it ensures that you get the same time.</li>
+</ul>
+<h3 id="When-to-Use-CLOCK-TIMESTAMP"><a href="#When-to-Use-CLOCK-TIMESTAMP" class="headerlink" title="When to Use CLOCK_TIMESTAMP():"></a>When to Use CLOCK_TIMESTAMP():</h3><ul>
+<li><strong>High-Precision Timing:</strong> If your application requires precise or high-resolution timing measurements, such as benchmarking or profiling code execution, <code>CLOCK_TIMESTAMP()</code> is suitable.</li>
+<li><strong>Real-Time Monitoring:</strong> For real-time applications where capturing the exact current time is essential, especially within long-running transactions, functions or procedures, it provides the necessary precision.</li>
+</ul>
 <h2 id="Footnotes"><a href="#Footnotes" class="headerlink" title="Footnotes"></a>Footnotes</h2><ol>
-<li><a target="_blank" rel="noopener" href="https://gist.github.com/fabiolimace/515a0440e3e40efeb234e12644a6a346#file-uuidv7-sql-L39">UUIDv7</a> function used</li>
-<li>Common timestamp use cases<ol>
+<li><a target="_blank" rel="noopener" href="https://gist.github.com/fabiolimace/515a0440e3e40efeb234e12644a6a346#file-uuidv7-sql-L39">UUIDv7</a> function used.</li>
+<li>Some common or general timestamp use cases:<ul>
 <li>Audit Trails</li>
 <li>Time-Based Analytics</li>
 <li>Data Cleanup/Maintenance</li>
@@ -368,7 +376,7 @@ from x;
 <li>Report Generation</li>
 <li>Rate Limiting</li>
 <li>Data Versioning</li>
-</ol>
+</ul>
 </li>
 </ol>
 
@@ -394,7 +402,7 @@ from x;
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Timestamps-in-Postgres"><span class="toc-number">1.</span> <span class="toc-text">Timestamps in Postgres</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Testing-it-out"><span class="toc-number">2.</span> <span class="toc-text">Testing it out</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Outside-a-transaction"><span class="toc-number">2.1.</span> <span class="toc-text">Outside a transaction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Inside-a-transaction"><span class="toc-number">2.2.</span> <span class="toc-text">Inside a transaction</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Practical-Use-Cases"><span class="toc-number">3.</span> <span class="toc-text">Practical Use Cases</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Benchmarking-Queries"><span class="toc-number">3.1.</span> <span class="toc-text">Benchmarking Queries</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generating-IDs"><span class="toc-number">3.2.</span> <span class="toc-text">Generating IDs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Footnotes"><span class="toc-number">5.</span> <span class="toc-text">Footnotes</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Timestamps-in-Postgres"><span class="toc-number">1.</span> <span class="toc-text">Timestamps in Postgres</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Testing-it-out"><span class="toc-number">2.</span> <span class="toc-text">Testing it out</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Outside-a-transaction"><span class="toc-number">2.1.</span> <span class="toc-text">Outside a transaction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Inside-a-transaction"><span class="toc-number">2.2.</span> <span class="toc-text">Inside a transaction</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Practical-Use-Cases"><span class="toc-number">3.</span> <span class="toc-text">Practical Use Cases</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Benchmarking-Queries"><span class="toc-number">3.1.</span> <span class="toc-text">Benchmarking Queries</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generating-IDs"><span class="toc-number">3.2.</span> <span class="toc-text">Generating IDs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">4.</span> <span class="toc-text">Conclusion</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#When-to-Use-STATEMENT-TIMESTAMP"><span class="toc-number">4.1.</span> <span class="toc-text">When to Use STATEMENT_TIMESTAMP():</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#When-to-Use-CLOCK-TIMESTAMP"><span class="toc-number">4.2.</span> <span class="toc-text">When to Use CLOCK_TIMESTAMP():</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Footnotes"><span class="toc-number">5.</span> <span class="toc-text">Footnotes</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
