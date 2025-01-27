@@ -58,7 +58,8 @@
     <!-- codapi postgres -->
     <script defer type="module">
         import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
-        window.PGlite = PGlite;
+        const PGliteDB = new PGlite({dataDir:"idb://pgdata"});
+        window.PGlite = PGliteDB;
     </script>
     <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
 

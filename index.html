@@ -58,7 +58,8 @@
     <!-- codapi postgres -->
     <script defer type="module">
         import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
-        window.PGlite = PGlite;
+        const PGliteDB = new PGlite({dataDir:"idb://pgdata"});
+        window.PGlite = PGliteDB;
     </script>
     <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
 
@@ -196,6 +197,26 @@
     
       
     
+    
+      <li class="post-item">
+        
+    <div class="meta">
+      
+        
+          <time datetime="2025-01-15T21:12:22.000Z" itemprop="datePublished">2025-01-15</time>
+        
+      
+    </div>
+
+
+        <span>
+    
+        <a class="" href="/postgresql-timestamp-differences.html">PostgreSQL Timestamp Differences</a>
+    
+
+
+</span>
+      </li>
     
       <li class="post-item">
         

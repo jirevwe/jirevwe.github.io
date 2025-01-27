@@ -63,7 +63,8 @@
     <!-- codapi postgres -->
     <script defer type="module">
         import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
-        window.PGlite = PGlite;
+        const PGliteDB = new PGlite({dataDir:"idb://pgdata"});
+        window.PGlite = PGliteDB;
     </script>
     <script defer src="https://unpkg.com/@antonz/codapi@0.19.10/dist/engine/pglite.js"></script>
 
@@ -135,6 +136,8 @@
     <br/>
     <span id="actions">
       <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/postgresql-timestamp-differences.html"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" aria-label="Next post" href="/partition-management-using-go-partman.html"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
