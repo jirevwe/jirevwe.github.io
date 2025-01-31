@@ -14,7 +14,7 @@
 <meta property="og:description" content="While working on my ULID post, I looked into ways to generate ULIDs from a timestamp and came across geckoboard&#x2F;pgluid which implements the function in Pl&#x2F;PgSQL. What really caught my eye was how the">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-01-15T21:12:22.000Z">
-<meta property="article:modified_time" content="2025-01-27T10:19:29.512Z">
+<meta property="article:modified_time" content="2025-01-31T09:13:21.937Z">
 <meta property="article:author" content="Raymond Tukpe">
 <meta property="article:tag" content="tech">
 <meta property="article:tag" content="postgres">
@@ -341,7 +341,7 @@ end;
 $$ language plpgsql;
 </code></pre>
 <p><codapi-snippet sandbox="postgres" editor="basic" ></codapi-snippet></p>
-<h3 id="Generating-IDs"><a href="#Generating-IDs" class="headerlink" title="Generating IDs"></a>Generating IDs</h3><p>When generating IDs using a custom function (for example UUIDv7 [1]) only <code>CLOCK_TIMESTAMP()</code> is recommended for use as both <code>STATEMENT_TIMESTAMP()</code> and the <code>TRANSACTION_TIMESTAMP()</code> variants return the same value as we’ve seen above. </p>
+<h3 id="Generating-IDs"><a href="#Generating-IDs" class="headerlink" title="Generating IDs"></a>Generating IDs</h3><p>When generating IDs using a custom function (for example UUIDv7<sup>[1]</sup>) only <code>CLOCK_TIMESTAMP()</code> is recommended for use as both <code>STATEMENT_TIMESTAMP()</code> and the <code>TRANSACTION_TIMESTAMP()</code> variants return the same value as we’ve seen above. </p>
 <pre><code class="lang-sql">with x as (
     select 
         clock_timestamp() as c,
@@ -357,7 +357,7 @@ select x.n,
 from x;
 </code></pre>
 <p><codapi-snippet sandbox="postgres" editor="basic" template="#uuid7.sql"></codapi-snippet></p>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>For most use cases [2] <code>NOW()</code> or <code>CURRENT_TIMESTAMP</code> are sufficient, if you need more accuracy when dealing with time in a complex query you should consider using either <code>CLOCK_TIMESTAMP()</code> or <code>STATEMENT_TIMESTAMP()</code>.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>For most use cases<sup>[2]</sup> <code>NOW()</code> or <code>CURRENT_TIMESTAMP</code> are sufficient, if you need more accuracy when dealing with time in a complex query you should consider using either <code>CLOCK_TIMESTAMP()</code> or <code>STATEMENT_TIMESTAMP()</code>.</p>
 <h3 id="When-to-Use-STATEMENT-TIMESTAMP"><a href="#When-to-Use-STATEMENT-TIMESTAMP" class="headerlink" title="When to Use STATEMENT_TIMESTAMP():"></a>When to Use STATEMENT_TIMESTAMP():</h3><ul>
 <li><strong>Statement-Level Timing:</strong> If you need to capture the exact time when a particular SQL statement begins execution, <code>STATEMENT_TIMESTAMP()</code> is appropriate.</li>
 <li><strong>Consistency Within Statements:</strong> For scenarios where consistency within a single statement is needed, and you want a uniform timestamp for all operations within that statement, it ensures that you get the same time.</li>
