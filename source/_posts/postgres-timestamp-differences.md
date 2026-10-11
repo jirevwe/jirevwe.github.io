@@ -154,7 +154,7 @@ $$ language plpgsql;
 
 ### Generating IDs
 
-When generating IDs using a custom function (for example UUIDv7 [1]) only `CLOCK_TIMESTAMP()` is recommended for use as both `STATEMENT_TIMESTAMP()` and the `TRANSACTION_TIMESTAMP()` variants return the same value as we've seen above. 
+When generating IDs using a custom function (for example UUIDv7<sup>[1]</sup>) only `CLOCK_TIMESTAMP()` is recommended for use as both `STATEMENT_TIMESTAMP()` and the `TRANSACTION_TIMESTAMP()` variants return the same value as we've seen above. 
 
 <pre><code class="lang-sql">with x as (
     select 
@@ -173,7 +173,7 @@ from x;
 <codapi-snippet sandbox="postgres" editor="basic" template="#uuid7.sql"></codapi-snippet>
 
 ## Conclusion
-For most use cases [2] `NOW()` or `CURRENT_TIMESTAMP` are sufficient, if you need more accuracy when dealing with time in a complex query you should consider using either `CLOCK_TIMESTAMP()` or `STATEMENT_TIMESTAMP()`.
+For most use cases<sup>[2]</sup> `NOW()` or `CURRENT_TIMESTAMP` are sufficient, if you need more accuracy when dealing with time in a complex query you should consider using either `CLOCK_TIMESTAMP()` or `STATEMENT_TIMESTAMP()`.
 
 ### When to Use STATEMENT_TIMESTAMP():
 - **Statement-Level Timing:** If you need to capture the exact time when a particular SQL statement begins execution, `STATEMENT_TIMESTAMP()` is appropriate.
