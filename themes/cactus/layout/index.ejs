@@ -69,5 +69,15 @@
       </li>
     <% } %>
   </ul>
+  <% if (site.data.games) { %>
+  <span class="h2">Games</span>
+  <ul class="project-list">
+    <% for(var obj in site.data.games){ %>
+      <li class="project-item">
+        <a href="<%= site.data.games[obj].url %>"><%= site.data.games[obj].name %></a>: <%- markdown(site.data.games[obj].desc) %>
+      </li>
+    <% } %>
+  </ul>
+  <% } %>
 </section>
 <% } %>
