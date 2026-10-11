@@ -8,3 +8,4 @@ db.json
 .deploy_git
 *.log
 .idea
+.yarn
