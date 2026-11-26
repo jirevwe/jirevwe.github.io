@@ -3,5 +3,10 @@
     "name": "GET OUT!!!",
     "url": "https://getout.raymondtukpe.com/?daily=today-10",
     "desc": "A fogged maze race against a rival prisoner: grab the key, escape before they do. Play today's Daily Challenge."
+  },
+  {
+    "name": "Swing (demo)",
+    "url": "https://swing.raymondtukpe.com",
+    "desc": "A portrait, fogged 4-way dungeon crawl where every fight is a timed swing. Play in the browser, or grab the [Android APK](https://swing.raymondtukpe.com/swing-demo.apk)."
   }
 ]
